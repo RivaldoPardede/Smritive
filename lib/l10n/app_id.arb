@@ -1,0 +1,114 @@
+{
+  "@@locale": "id",
+
+  "appTitle": "LOVE to STORY",
+  "@appTitle": { "description": "Judul app bar yang ditampilkan di seluruh aplikasi" },
+
+  "login_title": "Selamat Datang",
+  "@login_title": {},
+
+  "login_subtitle": "Masuk untuk melanjutkan perjalanan ceritamu",
+  "@login_subtitle": {},
+
+  "register_title": "Buat Akun",
+  "@register_title": {},
+
+  "register_subtitle": "Mulai berbagi ceritamu dengan dunia",
+  "@register_subtitle": {},
+
+  "stories_title": "Cerita",
+  "@stories_title": {},
+
+  "detail_title": "Detail Cerita",
+  "@detail_title": {},
+
+  "add_story_title": "Tambah Cerita",
+  "@add_story_title": {},
+
+  "field_email": "Alamat email",
+  "@field_email": {},
+
+  "field_password": "Kata sandi",
+  "@field_password": {},
+
+  "field_name": "Nama lengkap",
+  "@field_name": {},
+
+  "field_description": "Deskripsi",
+  "@field_description": {},
+
+  "field_description_hint": "Ceritakan kisahmu…",
+  "@field_description_hint": {},
+
+  "btn_login": "Masuk",
+  "@btn_login": {},
+
+  "btn_register": "Daftar",
+  "@btn_register": {},
+
+  "btn_share_story": "Bagikan Cerita",
+  "@btn_share_story": {},
+
+  "error_photo_too_large": "Foto harus lebih kecil dari 1 MB. Pilih gambar yang berbeda.",
+  "@error_photo_too_large": {},
+
+  "state_loading": "Memuat…",
+  "@state_loading": {},
+
+  "state_empty": "Belum ada cerita",
+  "@state_empty": {},
+
+  "state_error": "Terjadi kesalahan",
+  "@state_error": {},
+
+  "action_retry": "Coba lagi",
+  "@action_retry": {},
+
+  "nav_home": "Beranda",
+  "@nav_home": {},
+
+  "nav_search": "Cari",
+  "@nav_search": {},
+
+  "nav_saved": "Disimpan",
+  "@nav_saved": {},
+
+  "nav_profile": "Profil",
+  "@nav_profile": {},
+
+  "section_popular": "Cerita populer",
+  "@section_popular": {},
+
+  "section_you_may_like": "Mungkin kamu suka",
+  "@section_you_may_like": {},
+
+  "section_recent": "Terbaru",
+  "@section_recent": {},
+
+  "link_view_all": "Lihat semua",
+  "@link_view_all": {},
+
+  "link_refresh": "Perbarui daftar",
+  "@link_refresh": {},
+
+  "auth_no_account": "Belum punya akun? ",
+  "@auth_no_account": {},
+
+  "auth_have_account": "Sudah punya akun? ",
+  "@auth_have_account": {},
+
+  "photo_select_label": "Ketuk untuk memilih foto",
+  "@photo_select_label": {},
+
+  "photo_select_hint": "Maks 1 MB · JPG, PNG",
+  "@photo_select_hint": {},
+
+  "photo_source_gallery": "Pilih dari galeri",
+  "@photo_source_gallery": {},
+
+  "photo_source_camera": "Ambil foto",
+  "@photo_source_camera": {},
+
+  "logout": "Keluar",
+  "@logout": {}
+}

@@ -1,0 +1,114 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "LOVE to STORY",
+  "@appTitle": { "description": "App bar title shown throughout the app" },
+
+  "login_title": "Welcome Back",
+  "@login_title": { "description": "Login screen heading" },
+
+  "login_subtitle": "Login to continue your story journey",
+  "@login_subtitle": {},
+
+  "register_title": "Create Account",
+  "@register_title": { "description": "Register screen heading" },
+
+  "register_subtitle": "Start sharing your story with the world",
+  "@register_subtitle": {},
+
+  "stories_title": "Stories",
+  "@stories_title": {},
+
+  "detail_title": "Story Detail",
+  "@detail_title": {},
+
+  "add_story_title": "Add Story",
+  "@add_story_title": {},
+
+  "field_email": "Email address",
+  "@field_email": {},
+
+  "field_password": "Password",
+  "@field_password": {},
+
+  "field_name": "Full name",
+  "@field_name": {},
+
+  "field_description": "Description",
+  "@field_description": {},
+
+  "field_description_hint": "Tell your story…",
+  "@field_description_hint": {},
+
+  "btn_login": "Login",
+  "@btn_login": {},
+
+  "btn_register": "Register",
+  "@btn_register": {},
+
+  "btn_share_story": "Share Story",
+  "@btn_share_story": {},
+
+  "error_photo_too_large": "Photo must be smaller than 1 MB. Please choose a different image.",
+  "@error_photo_too_large": {},
+
+  "state_loading": "Loading…",
+  "@state_loading": {},
+
+  "state_empty": "No stories yet",
+  "@state_empty": {},
+
+  "state_error": "Something went wrong",
+  "@state_error": {},
+
+  "action_retry": "Retry",
+  "@action_retry": {},
+
+  "nav_home": "Home",
+  "@nav_home": {},
+
+  "nav_search": "Search",
+  "@nav_search": {},
+
+  "nav_saved": "Saved",
+  "@nav_saved": {},
+
+  "nav_profile": "Profile",
+  "@nav_profile": {},
+
+  "section_popular": "Popular story",
+  "@section_popular": {},
+
+  "section_you_may_like": "You may also like",
+  "@section_you_may_like": {},
+
+  "section_recent": "Recent",
+  "@section_recent": {},
+
+  "link_view_all": "View all",
+  "@link_view_all": {},
+
+  "link_refresh": "Refresh to update",
+  "@link_refresh": {},
+
+  "auth_no_account": "Don't have an account? ",
+  "@auth_no_account": {},
+
+  "auth_have_account": "Already have an account? ",
+  "@auth_have_account": {},
+
+  "photo_select_label": "Tap to select a photo",
+  "@photo_select_label": {},
+
+  "photo_select_hint": "Max 1 MB · JPG, PNG",
+  "@photo_select_hint": {},
+
+  "photo_source_gallery": "Choose from gallery",
+  "@photo_source_gallery": {},
+
+  "photo_source_camera": "Take a photo",
+  "@photo_source_camera": {},
+
+  "logout": "Logout",
+  "@logout": {}
+}
