@@ -12,8 +12,8 @@ class StoryListProvider extends ChangeNotifier {
   StoryListProvider({
     required StoryRepository repository,
     required String token,
-  })  : _repository = repository,
-        _token = token;
+  }) : _repository = repository,
+       _token = token;
 
   final StoryRepository _repository;
   final String _token;
@@ -28,8 +28,7 @@ class StoryListProvider extends ChangeNotifier {
 
   bool get isLoading => _status == StoryListStatus.loading;
   bool get hasError => _status == StoryListStatus.error;
-  bool get isEmpty =>
-      _status == StoryListStatus.loaded && _stories.isEmpty;
+  bool get isEmpty => _status == StoryListStatus.loaded && _stories.isEmpty;
 
   /// Fetches page 1. Call on first load and after successful story upload.
   Future<void> fetch() async {

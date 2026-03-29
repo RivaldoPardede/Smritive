@@ -36,7 +36,8 @@ GoRouter createRouter(AuthProvider authProvider) {
     refreshListenable: authProvider,
     redirect: (BuildContext context, GoRouterState state) {
       final isLoggedIn = authProvider.isLoggedIn;
-      final onAuthRoute = state.matchedLocation == AppRoutes.login ||
+      final onAuthRoute =
+          state.matchedLocation == AppRoutes.login ||
           state.matchedLocation == AppRoutes.register;
 
       if (!isLoggedIn && !onAuthRoute) return AppRoutes.login;

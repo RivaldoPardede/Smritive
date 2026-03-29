@@ -53,14 +53,10 @@ class ApiService {
     int page = 1,
     int size = 20,
   }) async {
-    final uri = Uri.parse('$_baseUrl/stories').replace(queryParameters: {
-      'page': '$page',
-      'size': '$size',
-    });
-    final response = await _client.get(
-      uri,
-      headers: _authHeader(token),
-    );
+    final uri = Uri.parse(
+      '$_baseUrl/stories',
+    ).replace(queryParameters: {'page': '$page', 'size': '$size'});
+    final response = await _client.get(uri, headers: _authHeader(token));
     return _decode(response);
   }
 
@@ -103,8 +99,8 @@ class ApiService {
   // ---------------------------------------------------------------- helpers
 
   Map<String, String> _authHeader(String token) => {
-        'Authorization': 'Bearer $token',
-      };
+    'Authorization': 'Bearer $token',
+  };
 
   Map<String, dynamic> _decode(http.Response response) {
     final body = jsonDecode(response.body) as Map<String, dynamic>;

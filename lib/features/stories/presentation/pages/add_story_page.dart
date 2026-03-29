@@ -89,8 +89,10 @@ class _AddStoryViewState extends State<_AddStoryView> {
             ),
             const SizedBox(height: AppSpacing.sm),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined,
-                  color: AppColors.primary),
+              leading: const Icon(
+                Icons.photo_library_outlined,
+                color: AppColors.primary,
+              ),
               title: Text(l10n.photo_source_gallery, style: AppTextStyles.body),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -100,8 +102,10 @@ class _AddStoryViewState extends State<_AddStoryView> {
             ),
             const Divider(height: 1, color: AppColors.divider),
             ListTile(
-              leading: const Icon(Icons.camera_alt_outlined,
-                  color: AppColors.primary),
+              leading: const Icon(
+                Icons.camera_alt_outlined,
+                color: AppColors.primary,
+              ),
               title: Text(l10n.photo_source_camera, style: AppTextStyles.body),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -196,7 +200,10 @@ class _AddStoryViewState extends State<_AddStoryView> {
                   // ── Image Picker Area ────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.md, AppSpacing.md, AppSpacing.md, 0,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      0,
                     ),
                     child: GestureDetector(
                       onTap: () => _showImageSourceSheet(provider),
@@ -219,7 +226,10 @@ class _AddStoryViewState extends State<_AddStoryView> {
                   // ── Description Field ────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.md, AppSpacing.lg, AppSpacing.md, 0,
+                      AppSpacing.md,
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                      0,
                     ),
                     child: TextFormField(
                       controller: _descriptionController,
@@ -257,11 +267,14 @@ class _AddStoryViewState extends State<_AddStoryView> {
                             : () => _submit(provider),
                         child: provider.isLoading
                             ? const CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2)
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              )
                             : Text(
                                 l10n.btn_share_story,
-                                style: AppTextStyles.label
-                                    .copyWith(color: Colors.white),
+                                style: AppTextStyles.label.copyWith(
+                                  color: Colors.white,
+                                ),
                               ),
                       ),
                     ),

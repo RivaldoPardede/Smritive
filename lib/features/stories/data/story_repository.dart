@@ -16,12 +16,12 @@ class StoryRepository {
   }) async {
     final body = await _api.getStories(token: token, page: page, size: size);
     if (body['error'] == true) {
-      throw StoryException(body['message'] as String? ?? 'Failed to load stories');
+      throw StoryException(
+        body['message'] as String? ?? 'Failed to load stories',
+      );
     }
     final list = body['listStory'] as List<dynamic>;
-    return list
-        .map((e) => Story.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return list.map((e) => Story.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   /// Fetches a single story by [id].
@@ -31,7 +31,9 @@ class StoryRepository {
   }) async {
     final body = await _api.getStoryDetail(token: token, id: id);
     if (body['error'] == true) {
-      throw StoryException(body['message'] as String? ?? 'Failed to load story');
+      throw StoryException(
+        body['message'] as String? ?? 'Failed to load story',
+      );
     }
     return Story.fromJson(body['story'] as Map<String, dynamic>);
   }

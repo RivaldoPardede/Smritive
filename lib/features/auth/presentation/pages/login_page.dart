@@ -98,8 +98,9 @@ class _LoginViewState extends State<_LoginView> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         l10n.login_subtitle,
-                        style: AppTextStyles.body
-                            .copyWith(color: AppColors.textSecondary),
+                        style: AppTextStyles.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
 
@@ -181,13 +182,13 @@ class _LoginViewState extends State<_LoginView> {
                           final msg = provider.errorMessage;
                           if (msg == null) return const SizedBox.shrink();
                           return Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppSpacing.sm),
+                            padding: const EdgeInsets.only(top: AppSpacing.sm),
                             child: Center(
                               child: Text(
                                 msg,
-                                style: AppTextStyles.body
-                                    .copyWith(color: AppColors.error),
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.error,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -200,14 +201,14 @@ class _LoginViewState extends State<_LoginView> {
                       Center(
                         child: RichText(
                           text: TextSpan(
-                            style: AppTextStyles.body
-                                .copyWith(color: AppColors.textSecondary),
+                            style: AppTextStyles.body.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
                             children: [
                               TextSpan(text: l10n.auth_no_account),
                               WidgetSpan(
                                 child: GestureDetector(
-                                  onTap: () =>
-                                      context.go(AppRoutes.register),
+                                  onTap: () => context.go(AppRoutes.register),
                                   child: Text(
                                     l10n.btn_register,
                                     style: AppTextStyles.link,
@@ -244,7 +245,7 @@ class _IllustrationArea extends StatelessWidget {
       width: double.infinity,
       color: AppColors.background,
       padding: EdgeInsets.only(
-        top: safeTop + AppSpacing.xl, 
+        top: safeTop + AppSpacing.xl,
         bottom: AppSpacing.md,
         left: AppSpacing.xl,
         right: AppSpacing.xl,
@@ -260,7 +261,9 @@ class _IllustrationArea extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             title,
-            style: AppTextStyles.appTitle.copyWith(color: AppColors.textPrimary),
+            style: AppTextStyles.appTitle.copyWith(
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(

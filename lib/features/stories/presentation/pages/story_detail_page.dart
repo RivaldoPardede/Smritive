@@ -104,19 +104,26 @@ class _DetailContent extends StatelessWidget {
               story.photoUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stack) => const Center(
-                child: Icon(Icons.broken_image_outlined, size: 48, color: AppColors.textHint),
+                child: Icon(
+                  Icons.broken_image_outlined,
+                  size: 48,
+                  color: AppColors.textHint,
+                ),
               ),
               loadingBuilder: (context, child, progress) {
                 if (progress == null) return child;
-                return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                return const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
               },
             ),
           ),
 
           // ── Content ───────────────────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md)
-                .copyWith(top: AppSpacing.md),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+            ).copyWith(top: AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -132,15 +139,9 @@ class _DetailContent extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
 
                 // Date posted
-                Text(
-                  _formatDate(story.createdAt),
-                  style: AppTextStyles.author,
-                ),
+                Text(_formatDate(story.createdAt), style: AppTextStyles.author),
 
-                const Divider(
-                  color: AppColors.divider,
-                  height: AppSpacing.xl,
-                ),
+                const Divider(color: AppColors.divider, height: AppSpacing.xl),
 
                 // "The Story" section label
                 Text(
@@ -192,13 +193,19 @@ class _DetailSkeleton extends StatelessWidget {
                 const ShimmerBox(width: 120, height: 14, borderRadius: 4),
                 const SizedBox(height: AppSpacing.md),
                 const ShimmerBox(
-                    width: double.infinity, height: 14, borderRadius: 4),
+                  width: double.infinity,
+                  height: 14,
+                  borderRadius: 4,
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 const ShimmerBox(
-                    width: double.infinity, height: 14, borderRadius: 4),
+                  width: double.infinity,
+                  height: 14,
+                  borderRadius: 4,
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 const ShimmerBox(width: 180, height: 14, borderRadius: 4),
-              ]
+              ],
             ),
           ),
         ],
@@ -232,8 +239,9 @@ class _DetailError extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               message.isNotEmpty ? message : l10n.state_error,
-              style:
-                  AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.body.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.md),

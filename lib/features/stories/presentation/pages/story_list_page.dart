@@ -77,8 +77,9 @@ class _StoryListPageState extends State<StoryListPage> {
                       const SizedBox(width: 4),
                       Text(
                         l10n.lang_switch_label,
-                        style: AppTextStyles.label
-                            .copyWith(color: AppColors.primary),
+                        style: AppTextStyles.label.copyWith(
+                          color: AppColors.primary,
+                        ),
                       ),
                     ],
                   ),
@@ -101,8 +102,7 @@ class _StoryListPageState extends State<StoryListPage> {
                     return _ErrorState(
                       message: provider.errorMessage ?? '',
                       l10n: l10n,
-                      onRetry: () =>
-                          context.read<StoryListProvider>().fetch(),
+                      onRetry: () => context.read<StoryListProvider>().fetch(),
                     );
                   }
                   if (provider.isEmpty) return _EmptyState(l10n: l10n);
@@ -135,7 +135,10 @@ class _StoryContent extends StatelessWidget {
           height: 110,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             itemCount: stories.length,
             itemBuilder: (context, i) => Padding(
               padding: const EdgeInsets.only(right: AppSpacing.md),
@@ -153,11 +156,8 @@ class _StoryContent extends StatelessWidget {
           padding: EdgeInsets.zero,
           itemCount: stories.length,
           itemBuilder: (context, i) => _FeedPost(story: stories[i]),
-          separatorBuilder: (context, i) => const Divider(
-            color: AppColors.divider,
-            thickness: 1,
-            height: 24,
-          ),
+          separatorBuilder: (context, i) =>
+              const Divider(color: AppColors.divider, thickness: 1, height: 24),
         ),
 
         const SizedBox(height: 96), // FAB clearance
@@ -201,7 +201,10 @@ class _StoryRing extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stack) => Container(
                       color: AppColors.surfaceVariant,
-                      child: const Icon(Icons.person, color: AppColors.textHint),
+                      child: const Icon(
+                        Icons.person,
+                        color: AppColors.textHint,
+                      ),
                     ),
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
@@ -218,7 +221,9 @@ class _StoryRing extends StatelessWidget {
             width: 74,
             child: Text(
               story.name,
-              style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textPrimary,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -253,7 +258,10 @@ class _FeedPost extends StatelessWidget {
         children: [
           // 1. Post Header
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             child: Row(
               children: [
                 CircleAvatar(
@@ -261,47 +269,61 @@ class _FeedPost extends StatelessWidget {
                   backgroundColor: AppColors.surfaceVariant,
                   backgroundImage: NetworkImage(story.photoUrl),
                   onBackgroundImageError: (e, s) {},
-                  child: story.photoUrl.isEmpty ? const Icon(Icons.person, size: 20) : null,
+                  child: story.photoUrl.isEmpty
+                      ? const Icon(Icons.person, size: 20)
+                      : null,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     story.name,
-                    style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+                    style: AppTextStyles.body.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
                   _formatDate(story.createdAt),
-                  style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
           ),
-          
+
           // 2. Edge-to-Edge Photo
           GestureDetector(
             onTap: () => context.push('/stories/${story.id}'),
             child: Container(
               width: double.infinity,
-              height: MediaQuery.of(context).size.width, // 1:1 aspect ratio square like classic IG
+              height: MediaQuery.of(
+                context,
+              ).size.width, // 1:1 aspect ratio square like classic IG
               constraints: const BoxConstraints(maxHeight: 500),
               color: AppColors.surfaceVariant,
               child: Image.network(
                 story.photoUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stack) => const Center(
-                  child: Icon(Icons.broken_image_outlined, size: 48, color: AppColors.textHint),
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    size: 48,
+                    color: AppColors.textHint,
+                  ),
                 ),
                 loadingBuilder: (context, child, progress) {
                   if (progress == null) return child;
-                  return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                  return const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  );
                 },
               ),
             ),
           ),
-          
+
           // 3. Post Caption (Footer)
           GestureDetector(
             onTap: () => context.push('/stories/${story.id}'),
@@ -311,15 +333,16 @@ class _FeedPost extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 text: TextSpan(
-                  style: AppTextStyles.body.copyWith(color: AppColors.textPrimary, height: 1.4),
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.textPrimary,
+                    height: 1.4,
+                  ),
                   children: [
                     TextSpan(
                       text: '${story.name} ',
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    TextSpan(
-                      text: story.description,
-                    ),
+                    TextSpan(text: story.description),
                   ],
                 ),
               ),
@@ -343,37 +366,52 @@ class _LoadingSkeleton extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.fromLTRB(
-              AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm),
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.sm,
+          ),
           child: ShimmerBox(width: 120, height: 18, borderRadius: 4),
         ),
         SizedBox(
           height: 220,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             itemCount: 4,
             itemBuilder: (context, i) => Padding(
               padding: const EdgeInsets.only(right: AppSpacing.sm),
               child: ShimmerBox(
-                  width: 130, height: 220, borderRadius: AppRadius.lg),
+                width: 130,
+                height: 220,
+                borderRadius: AppRadius.lg,
+              ),
             ),
           ),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(
-              AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm),
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.sm,
+          ),
           child: ShimmerBox(width: 160, height: 18, borderRadius: 4),
         ),
         ...List.generate(
           3,
           (i) => const Padding(
             padding: EdgeInsets.fromLTRB(
-                AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.sm,
+            ),
             child: ShimmerBox(
-                width: double.infinity,
-                height: 88,
-                borderRadius: AppRadius.md),
+              width: double.infinity,
+              height: 88,
+              borderRadius: AppRadius.md,
+            ),
           ),
         ),
         const SizedBox(height: 80),
@@ -409,8 +447,9 @@ class _ErrorState extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Text(
                 message.isNotEmpty ? message : l10n.state_error,
-                style: AppTextStyles.body
-                    .copyWith(color: AppColors.textSecondary),
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.md),
@@ -441,13 +480,17 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.auto_stories_outlined,
-                size: 56, color: AppColors.textSecondary),
+            const Icon(
+              Icons.auto_stories_outlined,
+              size: 56,
+              color: AppColors.textSecondary,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(
               l10n.state_empty,
-              style:
-                  AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.body.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),

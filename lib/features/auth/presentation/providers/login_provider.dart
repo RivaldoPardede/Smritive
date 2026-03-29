@@ -13,8 +13,8 @@ class LoginProvider extends ChangeNotifier {
   LoginProvider({
     required AuthRepository repository,
     required AuthProvider authProvider,
-  })  : _repository = repository,
-        _authProvider = authProvider;
+  }) : _repository = repository,
+       _authProvider = authProvider;
 
   final AuthRepository _repository;
   final AuthProvider _authProvider;
@@ -26,10 +26,7 @@ class LoginProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isLoading => _status == AuthStatus.loading;
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     _status = AuthStatus.loading;
     _errorMessage = null;
     notifyListeners();

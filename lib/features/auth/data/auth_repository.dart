@@ -13,7 +13,11 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    final body = await _api.register(name: name, email: email, password: password);
+    final body = await _api.register(
+      name: name,
+      email: email,
+      password: password,
+    );
     if (body['error'] == true) {
       throw AuthException(body['message'] as String? ?? 'Registration failed');
     }

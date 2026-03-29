@@ -10,8 +10,8 @@ class StoryDetailProvider extends ChangeNotifier {
   StoryDetailProvider({
     required StoryRepository repository,
     required String token,
-  })  : _repository = repository,
-        _token = token;
+  }) : _repository = repository,
+       _token = token;
 
   final StoryRepository _repository;
   final String _token;

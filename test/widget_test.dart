@@ -6,11 +6,7 @@ import 'package:smritive/features/stories/domain/story.dart';
 void main() {
   group('LoginResult', () {
     test('fromJson maps all fields correctly', () {
-      final json = {
-        'userId': 'user-123',
-        'name': 'Riva',
-        'token': 'tok-abc',
-      };
+      final json = {'userId': 'user-123', 'name': 'Riva', 'token': 'tok-abc'};
       final result = LoginResult.fromJson(json);
       expect(result.userId, 'user-123');
       expect(result.name, 'Riva');

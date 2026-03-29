@@ -7,7 +7,7 @@ enum RegisterStatus { idle, loading, success, error }
 /// Drives the Register screen.
 class RegisterProvider extends ChangeNotifier {
   RegisterProvider({required AuthRepository repository})
-      : _repository = repository;
+    : _repository = repository;
 
   final AuthRepository _repository;
 
