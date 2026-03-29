@@ -135,5 +135,11 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+
+  "lang_switch_label": "EN",
+  "@lang_switch_label": { "description": "Label pada tombol ganti bahasa saat bahasa saat ini ID; ketuk untuk ke EN" },
+
+  "lang_switch_label_inverse": "ID",
+  "@lang_switch_label_inverse": { "description": "Label saat bahasa saat ini EN; ketuk untuk ke ID" }
 }

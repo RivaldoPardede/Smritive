@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -20,12 +21,9 @@ class StoryListPage extends StatefulWidget {
 }
 
 class _StoryListPageState extends State<StoryListPage> {
-  int _selectedNav = 0;
-
   @override
   void initState() {
     super.initState();
-    // Fetch on first mount
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<StoryListProvider>().fetch();
     });
@@ -35,158 +33,91 @@ class _StoryListPageState extends State<StoryListPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final auth = context.read<AuthProvider>();
+    final locale = context.read<LocaleProvider>();
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      // ── Bottom Navigation Bar ──────────────────────────────────────────
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: AppColors.divider, width: 1),
-          ),
-        ),
-        child: NavigationBar(
-          backgroundColor: AppColors.background,
-          selectedIndex: _selectedNav,
-          indicatorColor: AppColors.primaryLight,
-          onDestinationSelected: (i) => setState(() => _selectedNav = i),
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home, color: AppColors.primary),
-              label: l10n.nav_home,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.search),
-              selectedIcon: const Icon(Icons.search, color: AppColors.primary),
-              label: l10n.nav_search,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.bookmark_border),
-              selectedIcon:
-                  const Icon(Icons.bookmark, color: AppColors.primary),
-              label: l10n.nav_saved,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.person_outline),
-              selectedIcon:
-                  const Icon(Icons.person, color: AppColors.primary),
-              label: l10n.nav_profile,
-            ),
-          ],
-        ),
-      ),
-
-      // ── FAB: Add Story ─────────────────────────────────────────────────
+      // ── FAB: Add Story ─────────────────────────────────────────────────────
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 6,
+        tooltip: l10n.add_story_title,
         onPressed: () => context.push(AppRoutes.addStory),
         child: const Icon(Icons.add_a_photo_outlined),
       ),
 
-      body: _selectedNav == 0
-          ? _HomeTab(auth: auth, l10n: l10n)
-          : _PlaceholderTab(label: _tabLabel(l10n, _selectedNav)),
-    );
-  }
-
-  String _tabLabel(AppLocalizations l10n, int index) {
-    switch (index) {
-      case 1:
-        return l10n.nav_search;
-      case 2:
-        return l10n.nav_saved;
-      case 3:
-        return l10n.nav_profile;
-      default:
-        return '';
-    }
-  }
-}
-
-// ── Placeholder for non-Home tabs ─────────────────────────────────────────────
-
-class _PlaceholderTab extends StatelessWidget {
-  const _PlaceholderTab({required this.label});
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        label,
-        style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
-      ),
-    );
-  }
-}
-
-// ── Home Tab ──────────────────────────────────────────────────────────────────
-
-class _HomeTab extends StatelessWidget {
-  const _HomeTab({required this.auth, required this.l10n});
-
-  final AuthProvider auth;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: AppColors.primary,
-      onRefresh: () => context.read<StoryListProvider>().refresh(),
-      child: CustomScrollView(
-        slivers: [
-          // ── SliverAppBar ────────────────────────────────────────────────
-          SliverAppBar(
-            floating: true,
-            pinned: false,
-            backgroundColor: AppColors.background,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            centerTitle: true,
-            title: Text(l10n.appTitle, style: AppTextStyles.appTitle),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.logout, color: AppColors.textPrimary),
-                tooltip: l10n.logout,
-                onPressed: () async => auth.clearSession(),
-              ),
-            ],
-          ),
-
-          // ── Content ─────────────────────────────────────────────────────
-          SliverToBoxAdapter(
-            child: Consumer<StoryListProvider>(
-              builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const _LoadingSkeleton();
-                }
-                if (provider.hasError) {
-                  return _ErrorState(
-                    message: provider.errorMessage ?? '',
-                    l10n: l10n,
-                    onRetry: () => context.read<StoryListProvider>().fetch(),
-                  );
-                }
-                if (provider.isEmpty) {
-                  return _EmptyState(l10n: l10n);
-                }
-                return _StoryContent(
-                  stories: provider.stories,
-                  l10n: l10n,
-                );
-              },
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: () => context.read<StoryListProvider>().refresh(),
+        child: CustomScrollView(
+          slivers: [
+            // ── SliverAppBar ────────────────────────────────────────────────
+            SliverAppBar(
+              floating: true,
+              pinned: false,
+              backgroundColor: AppColors.background,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              centerTitle: true,
+              title: Text(l10n.appTitle, style: AppTextStyles.appTitle),
+              actions: [
+                // Language toggle button
+                TextButton(
+                  onPressed: locale.toggle,
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    minimumSize: const Size(44, 44),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.language, size: 18),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.lang_switch_label,
+                        style: AppTextStyles.label
+                            .copyWith(color: AppColors.primary),
+                      ),
+                    ],
+                  ),
+                ),
+                // Logout
+                IconButton(
+                  icon: const Icon(Icons.logout, color: AppColors.textPrimary),
+                  tooltip: l10n.logout,
+                  onPressed: () async => auth.clearSession(),
+                ),
+              ],
             ),
-          ),
-        ],
+
+            // ── Content ─────────────────────────────────────────────────────
+            SliverToBoxAdapter(
+              child: Consumer<StoryListProvider>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) return const _LoadingSkeleton();
+                  if (provider.hasError) {
+                    return _ErrorState(
+                      message: provider.errorMessage ?? '',
+                      l10n: l10n,
+                      onRetry: () =>
+                          context.read<StoryListProvider>().fetch(),
+                    );
+                  }
+                  if (provider.isEmpty) return _EmptyState(l10n: l10n);
+                  return _StoryContent(stories: provider.stories, l10n: l10n);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// ── Story Content (Loaded) ─────────────────────────────────────────────────────
+// ── Story Content (Loaded) ────────────────────────────────────────────────────
 
 class _StoryContent extends StatelessWidget {
   const _StoryContent({required this.stories, required this.l10n});
@@ -201,19 +132,12 @@ class _StoryContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Section 1: Popular story ───────────────────────────────────
+        // ── Section 1: Popular story ───────────────────────────────────────
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.section_popular, style: AppTextStyles.sectionHeader),
-              Text(l10n.link_view_all, style: AppTextStyles.link),
-            ],
-          ),
+          child: Text(l10n.section_popular, style: AppTextStyles.sectionHeader),
         ),
         SizedBox(
           height: 220,
@@ -228,24 +152,13 @@ class _StoryContent extends StatelessWidget {
           ),
         ),
 
-        // ── Section 2: You may also like ──────────────────────────────
+        // ── Section 2: You may also like ──────────────────────────────────
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.section_you_may_like,
-                  style: AppTextStyles.sectionHeader),
-              GestureDetector(
-                onTap: () =>
-                    context.read<StoryListProvider>().refresh(),
-                child: Text(l10n.link_refresh, style: AppTextStyles.link),
-              ),
-            ],
-          ),
+          child: Text(l10n.section_you_may_like,
+              style: AppTextStyles.sectionHeader),
         ),
 
         ListView.builder(
@@ -259,13 +172,13 @@ class _StoryContent extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: 80), // FAB clearance
       ],
     );
   }
 }
 
-// ── Popular Story Card (horizontal) ──────────────────────────────────────────
+// ── Popular Story Card (horizontal scroll) ────────────────────────────────────
 
 class _PopularCard extends StatelessWidget {
   const _PopularCard({required this.story});
@@ -294,7 +207,7 @@ class _PopularCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image
+                // Thumbnail
                 SizedBox(
                   height: 150,
                   width: double.infinity,
@@ -303,10 +216,8 @@ class _PopularCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stack) => Container(
                       color: AppColors.surfaceVariant,
-                      child: const Icon(
-                        Icons.broken_image_outlined,
-                        color: AppColors.textHint,
-                      ),
+                      child: const Icon(Icons.broken_image_outlined,
+                          color: AppColors.textHint),
                     ),
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
@@ -347,11 +258,19 @@ class _PopularCard extends StatelessWidget {
   }
 }
 
-// ── You May Also Like Card (vertical) ────────────────────────────────────────
+// ── You May Also Like Card (vertical) ─────────────────────────────────────────
 
 class _StoryCard extends StatelessWidget {
   const _StoryCard({required this.story});
   final Story story;
+
+  String _formatDate(String iso) {
+    try {
+      return iso.length >= 10 ? iso.substring(0, 10) : iso;
+    } catch (_) {
+      return iso;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -368,12 +287,26 @@ class _StoryCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: AppColors.surfaceVariant,
-                backgroundImage: NetworkImage(story.photoUrl),
-                onBackgroundImageError: (exception, stackTrace) {},
+              // Thumbnail avatar
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                child: SizedBox(
+                  width: 56,
+                  height: 56,
+                  child: Image.network(
+                    story.photoUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stack) => Container(
+                      color: AppColors.surfaceVariant,
+                      child: const Icon(Icons.broken_image_outlined,
+                          size: 24, color: AppColors.textHint),
+                    ),
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) return child;
+                      return Container(color: AppColors.surfaceVariant);
+                    },
+                  ),
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               // Text column
@@ -389,18 +322,14 @@ class _StoryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      story.createdAt.length >= 10
-                          ? story.createdAt.substring(0, 10)
-                          : story.createdAt,
+                      _formatDate(story.createdAt),
                       style: AppTextStyles.author,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       story.description,
-                      style:
-                          AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.body
+                          .copyWith(color: AppColors.textSecondary),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -425,7 +354,6 @@ class _LoadingSkeleton extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Popular section skeleton
         const Padding(
           padding: EdgeInsets.fromLTRB(
               AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm),
@@ -445,7 +373,6 @@ class _LoadingSkeleton extends StatelessWidget {
             ),
           ),
         ),
-        // List section skeleton
         const Padding(
           padding: EdgeInsets.fromLTRB(
               AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm),
@@ -454,11 +381,15 @@ class _LoadingSkeleton extends StatelessWidget {
         ...List.generate(
           3,
           (i) => const Padding(
-            padding: EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md,
-                AppSpacing.sm),
-            child: ShimmerBox(width: double.infinity, height: 96, borderRadius: AppRadius.md),
+            padding: EdgeInsets.fromLTRB(
+                AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+            child: ShimmerBox(
+                width: double.infinity,
+                height: 88,
+                borderRadius: AppRadius.md),
           ),
         ),
+        const SizedBox(height: 80),
       ],
     );
   }
@@ -479,26 +410,31 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.wifi_off, color: AppColors.error, size: 48),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            message.isNotEmpty ? message : l10n.state_error,
-            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
+    return SizedBox(
+      height: 400,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.wifi_off, color: AppColors.error, size: 48),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                message.isNotEmpty ? message : l10n.state_error,
+                style: AppTextStyles.body
+                    .copyWith(color: AppColors.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              FilledButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh, size: 18),
+                label: Text(l10n.action_retry),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.md),
-          TextButton(
-            onPressed: onRetry,
-            child: Text(l10n.action_retry,
-                style: AppTextStyles.label
-                    .copyWith(color: AppColors.primary)),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -512,19 +448,22 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.auto_stories_outlined,
-              size: 56, color: AppColors.textSecondary),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            l10n.state_empty,
-            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
-          ),
-        ],
+    return SizedBox(
+      height: 400,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.auto_stories_outlined,
+                size: 56, color: AppColors.textSecondary),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              l10n.state_empty,
+              style:
+                  AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+            ),
+          ],
+        ),
       ),
     );
   }

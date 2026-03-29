@@ -361,6 +361,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'by {name}'**
   String story_author_label(String name);
+
+  /// Label shown on the language toggle button when current language is EN; tap switches to ID
+  ///
+  /// In en, this message translates to:
+  /// **'ID'**
+  String get lang_switch_label;
+
+  /// Label shown when current language is ID; tap switches to EN
+  ///
+  /// In en, this message translates to:
+  /// **'EN'**
+  String get lang_switch_label_inverse;
 }
 
 class _AppLocalizationsDelegate

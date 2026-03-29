@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'core/network/api_service.dart';
+import 'core/providers/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
@@ -11,13 +12,20 @@ import 'l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Restore persisted session before the first frame.
-  final authProvider = await AuthProvider.create();
+  // Both providers need async init — run in parallel for speed.
+  final results = await Future.wait([
+    AuthProvider.create(),
+    LocaleProvider.create(),
+  ]);
+
+  final authProvider = results[0] as AuthProvider;
+  final localeProvider = results[1] as LocaleProvider;
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
+        ChangeNotifierProvider<LocaleProvider>.value(value: localeProvider),
         Provider<ApiService>(create: (_) => ApiService()),
       ],
       child: SmritiveApp(authProvider: authProvider),
@@ -25,6 +33,7 @@ void main() async {
   );
 }
 
+/// Root widget. Reads [LocaleProvider] so locale changes rebuild [MaterialApp].
 class SmritiveApp extends StatefulWidget {
   const SmritiveApp({super.key, required this.authProvider});
 
@@ -39,11 +48,15 @@ class _SmritiveAppState extends State<SmritiveApp> {
 
   @override
   Widget build(BuildContext context) {
+    // Watch LocaleProvider so MaterialApp rebuilds on language change.
+    final locale = context.watch<LocaleProvider>().locale;
+
     return MaterialApp.router(
       title: 'Smritive',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: _router,
+      locale: locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

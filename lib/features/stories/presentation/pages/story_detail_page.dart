@@ -73,17 +73,11 @@ class _StoryDetailView extends StatelessWidget {
 
 // ── Detail Content ────────────────────────────────────────────────────────────
 
-class _DetailContent extends StatefulWidget {
+class _DetailContent extends StatelessWidget {
   const _DetailContent({required this.story, required this.l10n});
+
   final Story story;
   final AppLocalizations l10n;
-
-  @override
-  State<_DetailContent> createState() => _DetailContentState();
-}
-
-class _DetailContentState extends State<_DetailContent> {
-  bool _bookmarked = false;
 
   String _formatDate(String isoDate) {
     try {
@@ -96,13 +90,11 @@ class _DetailContentState extends State<_DetailContent> {
 
   @override
   Widget build(BuildContext context) {
-    final story = widget.story;
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Hero Image ─────────────────────────────────────────────────
+          // ── Hero Image ────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md)
                 .copyWith(top: AppSpacing.md),
@@ -111,60 +103,31 @@ class _DetailContentState extends State<_DetailContent> {
               child: SizedBox(
                 width: double.infinity,
                 height: 260,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Network image
-                    Image.network(
-                      story.photoUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) => Container(
-                        color: AppColors.surfaceVariant,
-                        child: const Icon(Icons.broken_image_outlined,
-                            size: 48, color: AppColors.textHint),
-                      ),
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return Container(color: AppColors.surfaceVariant);
-                      },
-                    ),
-                    // Bookmark button — bottom right
-                    Positioned(
-                      bottom: AppSpacing.sm,
-                      right: AppSpacing.sm,
-                      child: Semantics(
-                        label: _bookmarked ? 'Remove bookmark' : 'Add bookmark',
-                        child: GestureDetector(
-                          onTap: () =>
-                              setState(() => _bookmarked = !_bookmarked),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              _bookmarked
-                                  ? Icons.bookmark
-                                  : Icons.bookmark_border,
-                              color: AppColors.primary,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                child: Image.network(
+                  story.photoUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stack) => Container(
+                    color: AppColors.surfaceVariant,
+                    child: const Icon(Icons.broken_image_outlined,
+                        size: 48, color: AppColors.textHint),
+                  ),
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(color: AppColors.surfaceVariant);
+                  },
                 ),
               ),
             ),
           ),
 
-          // ── Content ────────────────────────────────────────────────────
+          // ── Content ───────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md)
                 .copyWith(top: AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title (story name)
+                // Author name
                 Text(
                   story.name,
                   style: const TextStyle(
@@ -175,25 +138,10 @@ class _DetailContentState extends State<_DetailContent> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
 
-                // Author / date subline
+                // Date posted
                 Text(
                   _formatDate(story.createdAt),
                   style: AppTextStyles.author,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-
-                // Stats row — API does not return stats; display "--"
-                Row(
-                  children: [
-                    _StatItem(
-                        icon: Icons.visibility_outlined, label: '--'),
-                    const SizedBox(width: AppSpacing.md),
-                    _StatItem(
-                        icon: Icons.bookmark_border, label: '--'),
-                    const SizedBox(width: AppSpacing.md),
-                    _StatItem(
-                        icon: Icons.share_outlined, label: '--'),
-                  ],
                 ),
 
                 const Divider(
@@ -201,16 +149,9 @@ class _DetailContentState extends State<_DetailContent> {
                   height: AppSpacing.xl,
                 ),
 
-                // Date
-                Text(
-                  _formatDate(story.createdAt),
-                  style: AppTextStyles.caption,
-                ),
-                const SizedBox(height: AppSpacing.xs),
-
                 // "The Story" section label
                 Text(
-                  widget.l10n.story_section_label,
+                  l10n.story_section_label,
                   style: AppTextStyles.sectionHeader,
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -227,28 +168,6 @@ class _DetailContentState extends State<_DetailContent> {
           ),
         ],
       ),
-    );
-  }
-}
-
-// ── Stat Item ─────────────────────────────────────────────────────────────────
-
-class _StatItem extends StatelessWidget {
-  const _StatItem({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: AppColors.statIcon),
-        const SizedBox(width: 4),
-        Text(label, style: AppTextStyles.caption.copyWith(
-          color: AppColors.statIcon,
-        )),
-      ],
     );
   }
 }
@@ -275,9 +194,11 @@ class _DetailSkeleton extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           const ShimmerBox(width: 120, height: 14, borderRadius: 4),
           const SizedBox(height: AppSpacing.md),
-          const ShimmerBox(width: double.infinity, height: 14, borderRadius: 4),
+          const ShimmerBox(
+              width: double.infinity, height: 14, borderRadius: 4),
           const SizedBox(height: AppSpacing.sm),
-          const ShimmerBox(width: double.infinity, height: 14, borderRadius: 4),
+          const ShimmerBox(
+              width: double.infinity, height: 14, borderRadius: 4),
           const SizedBox(height: AppSpacing.sm),
           const ShimmerBox(width: 180, height: 14, borderRadius: 4),
         ],
@@ -316,12 +237,10 @@ class _DetailError extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.md),
-            TextButton(
+            FilledButton.icon(
               onPressed: onRetry,
-              child: Text(
-                l10n.action_retry,
-                style: AppTextStyles.label.copyWith(color: AppColors.primary),
-              ),
+              icon: const Icon(Icons.refresh, size: 18),
+              label: Text(l10n.action_retry),
             ),
           ],
         ),

@@ -143,4 +143,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String story_author_label(String name) {
     return 'by $name';
   }
+
+  @override
+  String get lang_switch_label => 'ID';
+
+  @override
+  String get lang_switch_label_inverse => 'EN';
 }
