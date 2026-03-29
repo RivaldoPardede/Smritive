@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// App bar title shown throughout the app
   ///
   /// In en, this message translates to:
-  /// **'LOVE to STORY'**
+  /// **'Smritive'**
   String get appTitle;
 
   /// Login screen heading

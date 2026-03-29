@@ -1,7 +1,7 @@
 {
   "@@locale": "id",
 
-  "appTitle": "LOVE to STORY",
+  "appTitle": "Smritive",
   "@appTitle": { "description": "Judul app bar yang ditampilkan di seluruh aplikasi" },
 
   "login_title": "Selamat Datang",

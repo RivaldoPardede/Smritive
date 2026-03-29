@@ -35,6 +35,22 @@ class StoryRepository {
     }
     return Story.fromJson(body['story'] as Map<String, dynamic>);
   }
+
+  /// Uploads a new story via multipart POST /stories.
+  /// Returns the raw response map; the `error` field indicates failure.
+  Future<Map<String, dynamic>> addStory({
+    required String token,
+    required String description,
+    required List<int> photoBytes,
+    required String photoFilename,
+  }) async {
+    return _api.addStory(
+      token: token,
+      description: description,
+      photoBytes: photoBytes,
+      photoFilename: photoFilename,
+    );
+  }
 }
 
 /// Thrown when the stories API returns an error response.

@@ -9,7 +9,7 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get appTitle => 'LOVE to STORY';
+  String get appTitle => 'Smritive';
 
   @override
   String get login_title => 'Selamat Datang';

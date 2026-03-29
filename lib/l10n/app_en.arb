@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
 
-  "appTitle": "LOVE to STORY",
+  "appTitle": "Smritive",
   "@appTitle": { "description": "App bar title shown throughout the app" },
 
   "login_title": "Welcome Back",
