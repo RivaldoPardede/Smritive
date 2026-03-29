@@ -22,6 +22,8 @@ dependencies:
   http: ^1.2.2
   image_picker: ^1.1.2
   google_fonts: ^8.0.2
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +34,22 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/icons/custom/
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icons/custom/smritive-icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#060d21"
+  adaptive_icon_foreground: "assets/icons/custom/smritive-icon.png"
+
+flutter_native_splash:
+  color: "#060d21"
+  image: "assets/icons/custom/smritive-icon.png"
+  android: true
+  android_gravity: center
+  branding_bottom_padding: 24
+  android_12:
+    color: "#060d21"
+    image: "assets/icons/custom/smritive-icon.png"

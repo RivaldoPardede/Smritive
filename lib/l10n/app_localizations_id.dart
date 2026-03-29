@@ -148,4 +148,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get lang_switch_label_inverse => 'ID';
+
+  @override
+  String get auth_tagline => 'Ubah momen singkat menjadi cerita abadi.';
 }

@@ -95,28 +95,21 @@ class _DetailContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Hero Image ────────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md)
-                .copyWith(top: AppSpacing.md),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              child: SizedBox(
-                width: double.infinity,
-                height: 260,
-                child: Image.network(
-                  story.photoUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stack) => Container(
-                    color: AppColors.surfaceVariant,
-                    child: const Icon(Icons.broken_image_outlined,
-                        size: 48, color: AppColors.textHint),
-                  ),
-                  loadingBuilder: (context, child, progress) {
-                    if (progress == null) return child;
-                    return Container(color: AppColors.surfaceVariant);
-                  },
-                ),
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.width,
+            constraints: const BoxConstraints(maxHeight: 500),
+            color: AppColors.surfaceVariant,
+            child: Image.network(
+              story.photoUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stack) => const Center(
+                child: Icon(Icons.broken_image_outlined, size: 48, color: AppColors.textHint),
               ),
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+                return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+              },
             ),
           ),
 
@@ -180,27 +173,34 @@ class _DetailSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ShimmerBox(
             width: double.infinity,
-            height: 260,
-            borderRadius: AppRadius.lg,
+            height: MediaQuery.of(context).size.width,
+            borderRadius: 0,
           ),
-          const SizedBox(height: AppSpacing.md),
-          const ShimmerBox(width: 200, height: 22, borderRadius: 4),
-          const SizedBox(height: AppSpacing.sm),
-          const ShimmerBox(width: 120, height: 14, borderRadius: 4),
-          const SizedBox(height: AppSpacing.md),
-          const ShimmerBox(
-              width: double.infinity, height: 14, borderRadius: 4),
-          const SizedBox(height: AppSpacing.sm),
-          const ShimmerBox(
-              width: double.infinity, height: 14, borderRadius: 4),
-          const SizedBox(height: AppSpacing.sm),
-          const ShimmerBox(width: 180, height: 14, borderRadius: 4),
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSpacing.md),
+                const ShimmerBox(width: 200, height: 22, borderRadius: 4),
+                const SizedBox(height: AppSpacing.sm),
+                const ShimmerBox(width: 120, height: 14, borderRadius: 4),
+                const SizedBox(height: AppSpacing.md),
+                const ShimmerBox(
+                    width: double.infinity, height: 14, borderRadius: 4),
+                const SizedBox(height: AppSpacing.sm),
+                const ShimmerBox(
+                    width: double.infinity, height: 14, borderRadius: 4),
+                const SizedBox(height: AppSpacing.sm),
+                const ShimmerBox(width: 180, height: 14, borderRadius: 4),
+              ]
+            ),
+          ),
         ],
       ),
     );

@@ -141,5 +141,8 @@
   "@lang_switch_label": { "description": "Label shown on the language toggle button when current language is EN; tap switches to ID" },
 
   "lang_switch_label_inverse": "EN",
-  "@lang_switch_label_inverse": { "description": "Label shown when current language is ID; tap switches to EN" }
+  "@lang_switch_label_inverse": { "description": "Label shown when current language is ID; tap switches to EN" },
+
+  "auth_tagline": "Turn fleeting moments into everlasting stories.",
+  "@auth_tagline": { "description": "Persuasive catchphrase shown on login and register screens" }
 }

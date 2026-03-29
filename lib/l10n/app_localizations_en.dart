@@ -149,4 +149,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lang_switch_label_inverse => 'EN';
+
+  @override
+  String get auth_tagline => 'Turn fleeting moments into everlasting stories.';
 }

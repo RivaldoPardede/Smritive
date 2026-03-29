@@ -127,97 +127,81 @@ class _StoryContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final popular = stories.take(5).toList();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Section 1: Popular story ───────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm,
-          ),
-          child: Text(l10n.section_popular, style: AppTextStyles.sectionHeader),
-        ),
+        // ── Section 1: Story Rings (Horizontal) ─────────────────────────
         SizedBox(
-          height: 220,
+          height: 110,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            itemCount: popular.length,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            itemCount: stories.length,
             itemBuilder: (context, i) => Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.sm),
-              child: _PopularCard(story: popular[i]),
+              padding: const EdgeInsets.only(right: AppSpacing.md),
+              child: _StoryRing(story: stories[i]),
             ),
           ),
         ),
 
-        // ── Section 2: You may also like ──────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm,
-          ),
-          child: Text(l10n.section_you_may_like,
-              style: AppTextStyles.sectionHeader),
-        ),
+        const Divider(height: 1, color: AppColors.divider),
 
-        ListView.builder(
+        // ── Section 2: The Feed (Vertical) ──────────────────────────────
+        ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          padding: EdgeInsets.zero,
           itemCount: stories.length,
-          itemBuilder: (context, i) => Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: _StoryCard(story: stories[i]),
+          itemBuilder: (context, i) => _FeedPost(story: stories[i]),
+          separatorBuilder: (context, i) => const Divider(
+            color: AppColors.divider,
+            thickness: 1,
+            height: 24,
           ),
         ),
 
-        const SizedBox(height: 80), // FAB clearance
+        const SizedBox(height: 96), // FAB clearance
       ],
     );
   }
 }
 
-// ── Popular Story Card (horizontal scroll) ────────────────────────────────────
+// ── Story Ring (Horizontal scroll item) ─────────────────────────────────────
 
-class _PopularCard extends StatelessWidget {
-  const _PopularCard({required this.story});
+class _StoryRing extends StatelessWidget {
+  const _StoryRing({required this.story});
   final Story story;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.push('/stories/${story.id}'),
-      child: SizedBox(
-        width: 130,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6,
-                offset: Offset(0, 2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Gradient Ring
+          Container(
+            padding: const EdgeInsets.all(3), // gradient width
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: AppColors.storyRingGradient,
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(2), // white gap
+              decoration: const BoxDecoration(
+                color: AppColors.background,
+                shape: BoxShape.circle,
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Thumbnail
-                SizedBox(
-                  height: 150,
-                  width: double.infinity,
+              child: ClipOval(
+                child: SizedBox(
+                  width: 60,
+                  height: 60,
                   child: Image.network(
                     story.photoUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stack) => Container(
                       color: AppColors.surfaceVariant,
-                      child: const Icon(Icons.broken_image_outlined,
-                          color: AppColors.textHint),
+                      child: const Icon(Icons.person, color: AppColors.textHint),
                     ),
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
@@ -225,43 +209,31 @@ class _PopularCard extends StatelessWidget {
                     },
                   ),
                 ),
-                // Info
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xs),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          story.description,
-                          style: AppTextStyles.cardTitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          story.name,
-                          style: AppTextStyles.author,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          const SizedBox(height: AppSpacing.xs),
+          // Name
+          SizedBox(
+            width: 74,
+            child: Text(
+              story.name,
+              style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ── You May Also Like Card (vertical) ─────────────────────────────────────────
+// ── Feed Post (Vertical list item) ──────────────────────────────────────────
 
-class _StoryCard extends StatelessWidget {
-  const _StoryCard({required this.story});
+class _FeedPost extends StatelessWidget {
+  const _FeedPost({required this.story});
   final Story story;
 
   String _formatDate(String iso) {
@@ -274,71 +246,86 @@ class _StoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        onTap: () => context.push('/stories/${story.id}'),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Thumbnail avatar
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-                child: SizedBox(
-                  width: 56,
-                  height: 56,
-                  child: Image.network(
-                    story.photoUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stack) => Container(
-                      color: AppColors.surfaceVariant,
-                      child: const Icon(Icons.broken_image_outlined,
-                          size: 24, color: AppColors.textHint),
-                    ),
-                    loadingBuilder: (context, child, progress) {
-                      if (progress == null) return child;
-                      return Container(color: AppColors.surfaceVariant);
-                    },
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Post Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundColor: AppColors.surfaceVariant,
+                  backgroundImage: NetworkImage(story.photoUrl),
+                  onBackgroundImageError: (e, s) {},
+                  child: story.photoUrl.isEmpty ? const Icon(Icons.person, size: 20) : null,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    story.name,
+                    style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                Text(
+                  _formatDate(story.createdAt),
+                  style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+          
+          // 2. Edge-to-Edge Photo
+          GestureDetector(
+            onTap: () => context.push('/stories/${story.id}'),
+            child: Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.width, // 1:1 aspect ratio square like classic IG
+              constraints: const BoxConstraints(maxHeight: 500),
+              color: AppColors.surfaceVariant,
+              child: Image.network(
+                story.photoUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stack) => const Center(
+                  child: Icon(Icons.broken_image_outlined, size: 48, color: AppColors.textHint),
+                ),
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                },
               ),
-              const SizedBox(width: AppSpacing.md),
-              // Text column
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+          
+          // 3. Post Caption (Footer)
+          GestureDetector(
+            onTap: () => context.push('/stories/${story.id}'),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: RichText(
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  style: AppTextStyles.body.copyWith(color: AppColors.textPrimary, height: 1.4),
                   children: [
-                    Text(
-                      story.name,
-                      style: AppTextStyles.cardTitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    TextSpan(
+                      text: '${story.name} ',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _formatDate(story.createdAt),
-                      style: AppTextStyles.author,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      story.description,
-                      style: AppTextStyles.body
-                          .copyWith(color: AppColors.textSecondary),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    TextSpan(
+                      text: story.description,
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

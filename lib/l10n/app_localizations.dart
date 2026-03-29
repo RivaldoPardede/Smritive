@@ -373,6 +373,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'EN'**
   String get lang_switch_label_inverse;
+
+  /// Persuasive catchphrase shown on login and register screens
+  ///
+  /// In en, this message translates to:
+  /// **'Turn fleeting moments into everlasting stories.'**
+  String get auth_tagline;
 }
 
 class _AppLocalizationsDelegate

@@ -69,10 +69,7 @@ class _RegisterViewState extends State<_RegisterView> {
       body: Column(
         children: [
           // ── Part A: illustration area ─────────────────────────────────
-          _IllustrationArea(
-            icon: Icons.auto_stories_rounded,
-            title: l10n.appTitle,
-          ),
+          _IllustrationArea(title: l10n.appTitle),
 
           // ── Part B: content area ──────────────────────────────────────
           Expanded(
@@ -263,9 +260,8 @@ class _RegisterViewState extends State<_RegisterView> {
 }
 
 class _IllustrationArea extends StatelessWidget {
-  const _IllustrationArea({required this.icon, required this.title});
+  const _IllustrationArea({required this.title});
 
-  final IconData icon;
   final String title;
 
   @override
@@ -273,17 +269,35 @@ class _IllustrationArea extends StatelessWidget {
     final safeTop = MediaQuery.of(context).padding.top;
     return Container(
       width: double.infinity,
-      height: 220 + safeTop,
-      color: AppColors.primaryLight,
-      padding: EdgeInsets.only(top: safeTop),
+      color: AppColors.background,
+      padding: EdgeInsets.only(
+        top: safeTop + AppSpacing.xl, 
+        bottom: AppSpacing.md,
+        left: AppSpacing.xl,
+        right: AppSpacing.xl,
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 72, color: AppColors.primary),
-          const SizedBox(height: AppSpacing.sm),
+          Image.asset(
+            'assets/icons/custom/smritive-icon.png',
+            width: 80,
+            height: 80,
+          ),
+          const SizedBox(height: AppSpacing.md),
           Text(
             title,
-            style: AppTextStyles.appTitle.copyWith(color: AppColors.primary),
+            style: AppTextStyles.appTitle.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            AppLocalizations.of(context)!.auth_tagline,
+            style: AppTextStyles.body.copyWith(
+              color: AppColors.textSecondary,
+              fontStyle: FontStyle.italic,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
