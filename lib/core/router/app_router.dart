@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/stories/data/story_repository.dart';
 import '../../features/stories/presentation/pages/story_list_page.dart';
 import '../../features/stories/presentation/pages/story_detail_page.dart';
 import '../../features/stories/presentation/pages/add_story_page.dart';
+import '../../features/stories/presentation/providers/story_list_provider.dart';
+import '../network/api_service.dart';
 
 /// Route path constants — single source of truth for all navigation.
 class AppRoutes {
@@ -50,7 +54,19 @@ GoRouter createRouter(AuthProvider authProvider) {
       ),
       GoRoute(
         path: AppRoutes.stories,
-        builder: (context, state) => const StoryListPage(),
+        builder: (context, state) {
+          // Inject StoryListProvider scoped to the stories route.
+          // It reads token from AuthProvider above in the widget tree.
+          final auth = context.read<AuthProvider>();
+          final api = context.read<ApiService>();
+          return ChangeNotifierProvider(
+            create: (_) => StoryListProvider(
+              repository: StoryRepository(api),
+              token: auth.token ?? '',
+            ),
+            child: const StoryListPage(),
+          );
+        },
         routes: [
           GoRoute(
             path: 'add',
