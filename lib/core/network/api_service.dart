@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-/// Base URL for the Dicoding Story API (from dicoding-api-docs.md).
 const String _baseUrl = 'https://story-api.dicoding.dev/v1';
 
 /// Thin wrapper around [http.Client] that provides typed results.

@@ -1,4 +1,3 @@
-/// Spacing scale from ui.md.
 class AppSpacing {
   AppSpacing._();
 
@@ -9,7 +8,6 @@ class AppSpacing {
   static const double xl = 32.0;
 }
 
-/// Border radius tokens from ui.md.
 class AppRadius {
   AppRadius._();
 

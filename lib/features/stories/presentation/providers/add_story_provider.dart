@@ -8,7 +8,6 @@ import '../../data/story_repository.dart';
 
 enum AddStoryStatus { idle, loading, success, error }
 
-/// Maximum allowed file size: 1 MB (from dicoding-api-docs.md).
 const int _maxPhotoBytes = 1048576;
 
 /// Drives the Add Story screen.

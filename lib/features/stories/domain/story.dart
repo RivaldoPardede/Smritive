@@ -1,5 +1,4 @@
 /// Story domain model — fields mapped directly from the Dicoding API response.
-/// See dicoding-api-docs.md (Get All Stories / Detail Story).
 class Story {
   const Story({
     required this.id,
