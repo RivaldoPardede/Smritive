@@ -175,8 +175,11 @@ class _DetailContentState extends State<_DetailContent> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
 
-                // Author
-                Text(story.name, style: AppTextStyles.author),
+                // Author / date subline
+                Text(
+                  _formatDate(story.createdAt),
+                  style: AppTextStyles.author,
+                ),
                 const SizedBox(height: AppSpacing.sm),
 
                 // Stats row — API does not return stats; display "--"
@@ -207,7 +210,7 @@ class _DetailContentState extends State<_DetailContent> {
 
                 // "The Story" section label
                 Text(
-                  'The Story',
+                  widget.l10n.story_section_label,
                   style: AppTextStyles.sectionHeader,
                 ),
                 const SizedBox(height: AppSpacing.sm),

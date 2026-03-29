@@ -119,4 +119,27 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get logout => 'Keluar';
+
+  @override
+  String get btn_close => 'Tutup';
+
+  @override
+  String get photo_required => 'Pilih foto terlebih dahulu.';
+
+  @override
+  String get story_section_label => 'Ceritanya';
+
+  @override
+  String get validation_required => 'Wajib diisi';
+
+  @override
+  String get validation_password_min => 'Kata sandi minimal 8 karakter';
+
+  @override
+  String get error_generic => 'Terjadi kesalahan tak terduga. Coba lagi.';
+
+  @override
+  String story_author_label(String name) {
+    return 'oleh $name';
+  }
 }

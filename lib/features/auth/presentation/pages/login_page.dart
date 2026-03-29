@@ -117,8 +117,12 @@ class _LoginViewState extends State<_LoginView> {
                             color: AppColors.primary,
                           ),
                         ),
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? 'Required' : null,
+                        validator: (v) {
+                          final l10n = AppLocalizations.of(context)!;
+                          return (v == null || v.trim().isEmpty)
+                              ? l10n.validation_required
+                              : null;
+                        },
                       ),
                       const SizedBox(height: AppSpacing.md),
 
@@ -145,8 +149,12 @@ class _LoginViewState extends State<_LoginView> {
                                   _passwordVisible.value = !visible,
                             ),
                           ),
-                          validator: (v) =>
-                              (v == null || v.isEmpty) ? 'Required' : null,
+                          validator: (v) {
+                            final l10n = AppLocalizations.of(context)!;
+                            return (v == null || v.isEmpty)
+                                ? l10n.validation_required
+                                : null;
+                          },
                         ),
                       ),
                       const SizedBox(height: AppSpacing.lg),

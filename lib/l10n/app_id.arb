@@ -110,5 +110,30 @@
   "@photo_source_camera": {},
 
   "logout": "Keluar",
-  "@logout": {}
+  "@logout": {},
+
+  "btn_close": "Tutup",
+  "@btn_close": {},
+
+  "photo_required": "Pilih foto terlebih dahulu.",
+  "@photo_required": {},
+
+  "story_section_label": "Ceritanya",
+  "@story_section_label": {},
+
+  "validation_required": "Wajib diisi",
+  "@validation_required": {},
+
+  "validation_password_min": "Kata sandi minimal 8 karakter",
+  "@validation_password_min": {},
+
+  "error_generic": "Terjadi kesalahan tak terduga. Coba lagi.",
+  "@error_generic": {},
+
+  "story_author_label": "oleh {name}",
+  "@story_author_label": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

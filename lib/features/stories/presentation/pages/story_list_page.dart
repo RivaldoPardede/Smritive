@@ -322,7 +322,7 @@ class _PopularCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          story.name,
+                          story.description,
                           style: AppTextStyles.cardTitle,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -389,7 +389,9 @@ class _StoryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      story.name,
+                      story.createdAt.length >= 10
+                          ? story.createdAt.substring(0, 10)
+                          : story.createdAt,
                       style: AppTextStyles.author,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

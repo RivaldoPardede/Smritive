@@ -319,6 +319,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+
+  /// No description provided for @btn_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get btn_close;
+
+  /// No description provided for @photo_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a photo first.'**
+  String get photo_required;
+
+  /// No description provided for @story_section_label.
+  ///
+  /// In en, this message translates to:
+  /// **'The Story'**
+  String get story_section_label;
+
+  /// No description provided for @validation_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get validation_required;
+
+  /// No description provided for @validation_password_min.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get validation_password_min;
+
+  /// No description provided for @error_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get error_generic;
+
+  /// No description provided for @story_author_label.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String story_author_label(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -119,4 +119,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout => 'Logout';
+
+  @override
+  String get btn_close => 'Close';
+
+  @override
+  String get photo_required => 'Please select a photo first.';
+
+  @override
+  String get story_section_label => 'The Story';
+
+  @override
+  String get validation_required => 'Required';
+
+  @override
+  String get validation_password_min =>
+      'Password must be at least 8 characters';
+
+  @override
+  String get error_generic => 'An unexpected error occurred. Please try again.';
+
+  @override
+  String story_author_label(String name) {
+    return 'by $name';
+  }
 }

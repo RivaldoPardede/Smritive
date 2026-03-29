@@ -110,5 +110,30 @@
   "@photo_source_camera": {},
 
   "logout": "Logout",
-  "@logout": {}
+  "@logout": {},
+
+  "btn_close": "Close",
+  "@btn_close": {},
+
+  "photo_required": "Please select a photo first.",
+  "@photo_required": {},
+
+  "story_section_label": "The Story",
+  "@story_section_label": {},
+
+  "validation_required": "Required",
+  "@validation_required": {},
+
+  "validation_password_min": "Password must be at least 8 characters",
+  "@validation_password_min": {},
+
+  "error_generic": "An unexpected error occurred. Please try again.",
+  "@error_generic": {},
+
+  "story_author_label": "by {name}",
+  "@story_author_label": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

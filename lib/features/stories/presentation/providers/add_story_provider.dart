@@ -28,12 +28,15 @@ class AddStoryProvider extends ChangeNotifier {
   AddStoryStatus _status = AddStoryStatus.idle;
   XFile? _selectedImage;
   String? _errorMessage;
-  String? _sizeError; // shown as SnackBar then cleared
+
+  /// True when the last picked image exceeded the 1 MB limit.
+  /// The UI reads this flag, shows the localized SnackBar, then calls [clearOversizeFlag].
+  bool _photoOversize = false;
 
   AddStoryStatus get status => _status;
   XFile? get selectedImage => _selectedImage;
   String? get errorMessage => _errorMessage;
-  String? get sizeError => _sizeError;
+  bool get photoOversize => _photoOversize;
   bool get isLoading => _status == AddStoryStatus.loading;
   bool get isSuccess => _status == AddStoryStatus.success;
 
@@ -43,7 +46,8 @@ class AddStoryProvider extends ChangeNotifier {
   // ---------------------------------------------------------------- image
 
   /// Picks an image from [source]. Validates 1 MB limit.
-  /// Sets [sizeError] if over limit — caller must show SnackBar then call [clearSizeError].
+  /// Sets [photoOversize] if file is too large — caller must show SnackBar
+  /// using [AppLocalizations.error_photo_too_large] then call [clearOversizeFlag].
   Future<void> pickImage(ImageSource source) async {
     final XFile? file = await _picker.pickImage(
       source: source,
@@ -53,20 +57,19 @@ class AddStoryProvider extends ChangeNotifier {
 
     final bytes = await file.length();
     if (bytes > _maxPhotoBytes) {
-      _sizeError =
-          'Photo must be smaller than 1 MB. Please choose a different image.';
+      _photoOversize = true;
       _selectedImage = null;
       notifyListeners();
       return;
     }
 
     _selectedImage = file;
-    _sizeError = null;
+    _photoOversize = false;
     notifyListeners();
   }
 
-  void clearSizeError() {
-    _sizeError = null;
+  void clearOversizeFlag() {
+    _photoOversize = false;
     notifyListeners();
   }
 
@@ -78,7 +81,6 @@ class AddStoryProvider extends ChangeNotifier {
   // --------------------------------------------------------------- submit
 
   /// Uploads the story. On success sets [status] to [AddStoryStatus.success].
-  /// Caller should navigate away and refresh the story list.
   Future<void> submit({required String description}) async {
     if (_selectedImage == null) return;
 

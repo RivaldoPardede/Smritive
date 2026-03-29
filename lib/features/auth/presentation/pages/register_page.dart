@@ -123,8 +123,12 @@ class _RegisterViewState extends State<_RegisterView> {
                             color: AppColors.primary,
                           ),
                         ),
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? 'Required' : null,
+                        validator: (v) {
+                          final l10n = AppLocalizations.of(context)!;
+                          return (v == null || v.trim().isEmpty)
+                              ? l10n.validation_required
+                              : null;
+                        },
                       ),
                       const SizedBox(height: AppSpacing.md),
 
@@ -139,8 +143,12 @@ class _RegisterViewState extends State<_RegisterView> {
                             color: AppColors.primary,
                           ),
                         ),
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? 'Required' : null,
+                        validator: (v) {
+                          final l10n = AppLocalizations.of(context)!;
+                          return (v == null || v.trim().isEmpty)
+                              ? l10n.validation_required
+                              : null;
+                        },
                       ),
                       const SizedBox(height: AppSpacing.md),
 
@@ -168,9 +176,12 @@ class _RegisterViewState extends State<_RegisterView> {
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty) return 'Required';
+                            final l10n = AppLocalizations.of(context)!;
+                            if (v == null || v.isEmpty) {
+                              return l10n.validation_required;
+                            }
                             if (v.length < 8) {
-                              return 'Password must be at least 8 characters';
+                              return l10n.validation_password_min;
                             }
                             return null;
                           },

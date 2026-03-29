@@ -40,12 +40,29 @@ class _AddStoryView extends StatefulWidget {
 class _AddStoryViewState extends State<_AddStoryView> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
+  bool _descriptionNotEmpty = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _descriptionController.addListener(() {
+      final notEmpty = _descriptionController.text.trim().isNotEmpty;
+      if (notEmpty != _descriptionNotEmpty) {
+        setState(() => _descriptionNotEmpty = notEmpty);
+      }
+    });
+  }
 
   @override
   void dispose() {
     _descriptionController.dispose();
     super.dispose();
   }
+
+  bool _isSubmittable(AddStoryProvider provider) =>
+      provider.selectedImage != null &&
+      _descriptionNotEmpty &&
+      !provider.isLoading;
 
   // ── Image picker bottom sheet ──────────────────────────────────────────────
 
@@ -62,7 +79,6 @@ class _AddStoryViewState extends State<_AddStoryView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: AppSpacing.sm),
-            // Handle bar
             Container(
               width: 40,
               height: 4,
@@ -73,24 +89,24 @@ class _AddStoryViewState extends State<_AddStoryView> {
             ),
             const SizedBox(height: AppSpacing.sm),
             ListTile(
-              leading:
-                  const Icon(Icons.photo_library_outlined, color: AppColors.primary),
+              leading: const Icon(Icons.photo_library_outlined,
+                  color: AppColors.primary),
               title: Text(l10n.photo_source_gallery, style: AppTextStyles.body),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
                 await provider.pickImage(ImageSource.gallery);
-                if (mounted) _checkSizeError(provider);
+                if (mounted) _checkOversizeError(provider);
               },
             ),
             const Divider(height: 1, color: AppColors.divider),
             ListTile(
-              leading:
-                  const Icon(Icons.camera_alt_outlined, color: AppColors.primary),
+              leading: const Icon(Icons.camera_alt_outlined,
+                  color: AppColors.primary),
               title: Text(l10n.photo_source_camera, style: AppTextStyles.body),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
                 await provider.pickImage(ImageSource.camera);
-                if (mounted) _checkSizeError(provider);
+                if (mounted) _checkOversizeError(provider);
               },
             ),
             const SizedBox(height: AppSpacing.md),
@@ -100,13 +116,16 @@ class _AddStoryViewState extends State<_AddStoryView> {
     );
   }
 
-  void _checkSizeError(AddStoryProvider provider) {
-    final err = provider.sizeError;
-    if (err != null && mounted) {
+  void _checkOversizeError(AddStoryProvider provider) {
+    if (provider.photoOversize && mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err), backgroundColor: AppColors.error),
+        SnackBar(
+          content: Text(l10n.error_photo_too_large),
+          backgroundColor: AppColors.error,
+        ),
       );
-      provider.clearSizeError();
+      provider.clearOversizeFlag();
     }
   }
 
@@ -115,9 +134,10 @@ class _AddStoryViewState extends State<_AddStoryView> {
   Future<void> _submit(AddStoryProvider provider) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (provider.selectedImage == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a photo first.'),
+        SnackBar(
+          content: Text(l10n.photo_required),
           backgroundColor: AppColors.error,
         ),
       );
@@ -129,9 +149,8 @@ class _AddStoryViewState extends State<_AddStoryView> {
     if (!mounted) return;
 
     if (provider.isSuccess) {
-      // Navigate to /stories — recreates StoryListProvider which triggers a
-      // fresh fetch, so the newly uploaded story appears at the top.
-      // This is a graded requirement per raw-procedure.md.
+      // Navigate to /stories — recreates StoryListProvider, triggers fresh
+      // fetch() in initState → newest story appears at top (graded requirement).
       context.go(AppRoutes.stories);
     } else if (provider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -155,10 +174,13 @@ class _AddStoryViewState extends State<_AddStoryView> {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          tooltip: 'Close',
-          onPressed: () => context.pop(),
+        leading: Semantics(
+          label: l10n.btn_close,
+          child: IconButton(
+            icon: const Icon(Icons.close, color: AppColors.textPrimary),
+            tooltip: l10n.btn_close,
+            onPressed: () => context.pop(),
+          ),
         ),
         title: Text(l10n.add_story_title, style: AppTextStyles.appTitle),
       ),
@@ -209,8 +231,9 @@ class _AddStoryViewState extends State<_AddStoryView> {
                         hintText: l10n.field_description_hint,
                         alignLabelWithHint: true,
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? l10n.validation_required
+                          : null,
                     ),
                   ),
 
@@ -222,7 +245,7 @@ class _AddStoryViewState extends State<_AddStoryView> {
                       height: 52,
                       child: FilledButton(
                         style: FilledButton.styleFrom(
-                          backgroundColor: provider.canSubmit
+                          backgroundColor: _isSubmittable(provider)
                               ? AppColors.primary
                               : AppColors.primaryLight,
                           shape: RoundedRectangleBorder(
@@ -291,7 +314,7 @@ class _EmptyImagePicker extends StatelessWidget {
   }
 }
 
-// ── Selected image preview state ──────────────────────────────────────────────
+// ── Selected image preview ────────────────────────────────────────────────────
 
 class _SelectedImagePreview extends StatelessWidget {
   const _SelectedImagePreview({required this.file, required this.onEdit});
@@ -304,7 +327,6 @@ class _SelectedImagePreview extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.file(file, fit: BoxFit.cover),
-        // Edit overlay — bottom right
         Positioned(
           bottom: AppSpacing.sm,
           right: AppSpacing.sm,
