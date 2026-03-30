@@ -208,7 +208,7 @@ class _LoginViewState extends State<_LoginView> {
                               TextSpan(text: l10n.auth_no_account),
                               WidgetSpan(
                                 child: GestureDetector(
-                                  onTap: () => context.go(AppRoutes.register),
+                                  onTap: () => context.push(AppRoutes.register),
                                   child: Text(
                                     l10n.btn_register,
                                     style: AppTextStyles.link,

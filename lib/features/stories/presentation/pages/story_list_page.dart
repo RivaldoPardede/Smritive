@@ -43,7 +43,14 @@ class _StoryListPageState extends State<StoryListPage> {
         foregroundColor: Colors.white,
         elevation: 6,
         tooltip: l10n.add_story_title,
-        onPressed: () => context.push(AppRoutes.addStory),
+        onPressed: () async {
+          final provider = context.read<StoryListProvider>();
+          final uploaded = await context.push<bool>(AppRoutes.addStory);
+          if (uploaded == true) {
+            // Called in StoryListPage's own scope — provider is guaranteed here.
+            provider.refresh();
+          }
+        },
         child: const Icon(Icons.add_a_photo_outlined),
       ),
 

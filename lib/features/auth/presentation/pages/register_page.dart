@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/network/api_service.dart';
-import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -56,8 +55,8 @@ class _RegisterViewState extends State<_RegisterView> {
       password: _passwordController.text,
     );
     if (provider.isSuccess && mounted) {
-      // Go to login so user signs in with their new account
-      context.go(AppRoutes.login);
+      // Pop back so user lands on Login to sign in with their new account
+      context.pop();
     }
   }
 
@@ -238,7 +237,7 @@ class _RegisterViewState extends State<_RegisterView> {
                               TextSpan(text: l10n.auth_have_account),
                               WidgetSpan(
                                 child: GestureDetector(
-                                  onTap: () => context.go(AppRoutes.login),
+                                  onTap: () => context.pop(),
                                   child: Text(
                                     l10n.btn_login,
                                     style: AppTextStyles.link,

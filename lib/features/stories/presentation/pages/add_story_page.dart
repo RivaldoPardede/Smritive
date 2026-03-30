@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/network/api_service.dart';
-import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -95,7 +94,7 @@ class _AddStoryViewState extends State<_AddStoryView> {
               ),
               title: Text(l10n.photo_source_gallery, style: AppTextStyles.body),
               onTap: () async {
-                Navigator.of(sheetContext).pop();
+                sheetContext.pop();
                 await provider.pickImage(ImageSource.gallery);
                 if (mounted) _checkOversizeError(provider);
               },
@@ -108,7 +107,7 @@ class _AddStoryViewState extends State<_AddStoryView> {
               ),
               title: Text(l10n.photo_source_camera, style: AppTextStyles.body),
               onTap: () async {
-                Navigator.of(sheetContext).pop();
+                sheetContext.pop();
                 await provider.pickImage(ImageSource.camera);
                 if (mounted) _checkOversizeError(provider);
               },
@@ -153,9 +152,9 @@ class _AddStoryViewState extends State<_AddStoryView> {
     if (!mounted) return;
 
     if (provider.isSuccess) {
-      // Navigate to /stories — recreates StoryListProvider, triggers fresh
-      // fetch() in initState → newest story appears at top (graded requirement).
-      context.go(AppRoutes.stories);
+      // Signal success back to StoryListPage via pop result.
+      // StoryListPage awaits this and calls refresh() in its own valid scope.
+      context.pop(true);
     } else if (provider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
