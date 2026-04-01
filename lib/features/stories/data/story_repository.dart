@@ -39,18 +39,22 @@ class StoryRepository {
   }
 
   /// Uploads a new story via multipart POST /stories.
-  /// Returns the raw response map; the `error` field indicates failure.
+  /// [lat] and [lon] are optional — only included when the paid flavor picks a location.
   Future<Map<String, dynamic>> addStory({
     required String token,
     required String description,
     required List<int> photoBytes,
     required String photoFilename,
+    double? lat,
+    double? lon,
   }) async {
     return _api.addStory(
       token: token,
       description: description,
       photoBytes: photoBytes,
       photoFilename: photoFilename,
+      lat: lat,
+      lon: lon,
     );
   }
 }

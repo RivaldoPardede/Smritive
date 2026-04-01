@@ -159,5 +159,32 @@
   "@map_tap_hint": { "description": "Hint below map before user taps the marker" },
 
   "map_address_error": "Could not load address. Please try again.",
-  "@map_address_error": { "description": "Error message when reverse geocoding fails" }
+  "@map_address_error": { "description": "Error message when reverse geocoding fails" },
+
+  "location_section_label": "Location (optional)",
+  "@location_section_label": { "description": "Location section header on add-story page" },
+
+  "location_free_locked": "Upgrade to paid to add location to your story.",
+  "@location_free_locked": { "description": "Shown in free variant where location is disabled" },
+
+  "location_pick_btn": "Add location from map",
+  "@location_pick_btn": { "description": "Button to open the location picker page (paid only)" },
+
+  "location_change": "Change",
+  "@location_change": { "description": "Button to re-open picker after location is already set" },
+
+  "location_clear": "Remove",
+  "@location_clear": { "description": "Button to clear the selected location" },
+
+  "location_picker_title": "Pick Location",
+  "@location_picker_title": { "description": "Title of the location picker page" },
+
+  "location_picker_hint": "Tap anywhere on the map to drop a pin.",
+  "@location_picker_hint": { "description": "Instruction shown at the top of the location picker" },
+
+  "location_picker_confirm": "Confirm",
+  "@location_picker_confirm": { "description": "Confirm button on the location picker page" },
+
+  "location_picker_clear": "Clear pin",
+  "@location_picker_clear": { "description": "Clear the dropped pin on location picker" }
 }

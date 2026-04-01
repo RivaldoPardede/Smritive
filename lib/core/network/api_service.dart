@@ -72,12 +72,14 @@ class ApiService {
   }
 
   /// POST /stories — multipart/form-data
-  /// Fields: description (string), photo (file ≤ 1 MB)
+  /// Fields: description (string), photo (file ≤ 1 MB), lat (float?), lon (float?)
   Future<Map<String, dynamic>> addStory({
     required String token,
     required String description,
     required List<int> photoBytes,
     required String photoFilename,
+    double? lat,
+    double? lon,
   }) async {
     final uri = Uri.parse('$_baseUrl/stories');
     final request = http.MultipartRequest('POST', uri)
@@ -90,6 +92,8 @@ class ApiService {
           filename: photoFilename,
         ),
       );
+    if (lat != null) request.fields['lat'] = lat.toString();
+    if (lon != null) request.fields['lon'] = lon.toString();
     final streamedResponse = await _client.send(request);
     final response = await http.Response.fromStream(streamedResponse);
     return _decode(response);

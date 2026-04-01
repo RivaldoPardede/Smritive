@@ -409,6 +409,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load address. Please try again.'**
   String get map_address_error;
+
+  /// Location section header on add-story page
+  ///
+  /// In en, this message translates to:
+  /// **'Location (optional)'**
+  String get location_section_label;
+
+  /// Shown in free variant where location is disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to paid to add location to your story.'**
+  String get location_free_locked;
+
+  /// Button to open the location picker page (paid only)
+  ///
+  /// In en, this message translates to:
+  /// **'Add location from map'**
+  String get location_pick_btn;
+
+  /// Button to re-open picker after location is already set
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get location_change;
+
+  /// Button to clear the selected location
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get location_clear;
+
+  /// Title of the location picker page
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Location'**
+  String get location_picker_title;
+
+  /// Instruction shown at the top of the location picker
+  ///
+  /// In en, this message translates to:
+  /// **'Tap anywhere on the map to drop a pin.'**
+  String get location_picker_hint;
+
+  /// Confirm button on the location picker page
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get location_picker_confirm;
+
+  /// Clear the dropped pin on location picker
+  ///
+  /// In en, this message translates to:
+  /// **'Clear pin'**
+  String get location_picker_clear;
 }
 
 class _AppLocalizationsDelegate

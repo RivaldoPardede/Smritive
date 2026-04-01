@@ -159,5 +159,32 @@
   "@map_tap_hint": { "description": "Petunjuk sebelum pengguna mengetuk marker" },
 
   "map_address_error": "Gagal memuat alamat. Silakan coba lagi.",
-  "@map_address_error": { "description": "Pesan error ketika reverse geocoding gagal" }
+  "@map_address_error": { "description": "Pesan error ketika reverse geocoding gagal" },
+
+  "location_section_label": "Lokasi (opsional)",
+  "@location_section_label": { "description": "Header bagian lokasi di halaman tambah cerita" },
+
+  "location_free_locked": "Upgrade ke versi berbayar untuk menambahkan lokasi ke ceritamu.",
+  "@location_free_locked": { "description": "Ditampilkan di versi gratis di mana lokasi dinonaktifkan" },
+
+  "location_pick_btn": "Tambah lokasi dari peta",
+  "@location_pick_btn": { "description": "Tombol untuk membuka halaman pemilih lokasi (khusus berbayar)" },
+
+  "location_change": "Ubah",
+  "@location_change": { "description": "Tombol untuk membuka ulang pemilih setelah lokasi sudah dipilih" },
+
+  "location_clear": "Hapus",
+  "@location_clear": { "description": "Tombol untuk menghapus lokasi yang dipilih" },
+
+  "location_picker_title": "Pilih Lokasi",
+  "@location_picker_title": { "description": "Judul halaman pemilih lokasi" },
+
+  "location_picker_hint": "Ketuk di mana saja di peta untuk menandai titik.",
+  "@location_picker_hint": { "description": "Petunjuk di bagian atas halaman pemilih lokasi" },
+
+  "location_picker_confirm": "Konfirmasi",
+  "@location_picker_confirm": { "description": "Tombol konfirmasi di halaman pemilih lokasi" },
+
+  "location_picker_clear": "Hapus pin",
+  "@location_picker_clear": { "description": "Menghapus pin yang sudah ditandai di halaman pemilih lokasi" }
 }

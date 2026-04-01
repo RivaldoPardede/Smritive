@@ -9,6 +9,7 @@ import '../../features/stories/data/story_repository.dart';
 import '../../features/stories/presentation/pages/story_list_page.dart';
 import '../../features/stories/presentation/pages/story_detail_page.dart';
 import '../../features/stories/presentation/pages/add_story_page.dart';
+import '../../features/stories/presentation/pages/location_picker_page.dart';
 import '../../features/stories/presentation/providers/story_list_provider.dart';
 import '../network/api_service.dart';
 
@@ -21,6 +22,7 @@ class AppRoutes {
   static const String stories = '/stories';
   static const String storyDetail = '/stories/:id';
   static const String addStory = '/stories/add';
+  static const String locationPicker = '/stories/add/location';
 }
 
 /// Builds the [GoRouter] that drives the entire app.
@@ -72,6 +74,12 @@ GoRouter createRouter(AuthProvider authProvider) {
           GoRoute(
             path: 'add',
             builder: (context, state) => const AddStoryPage(),
+            routes: [
+              GoRoute(
+                path: 'location',
+                builder: (context, state) => const LocationPickerPage(),
+              ),
+            ],
           ),
           GoRoute(
             path: ':id',

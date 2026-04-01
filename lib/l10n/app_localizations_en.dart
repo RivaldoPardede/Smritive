@@ -167,4 +167,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get map_address_error => 'Could not load address. Please try again.';
+
+  @override
+  String get location_section_label => 'Location (optional)';
+
+  @override
+  String get location_free_locked =>
+      'Upgrade to paid to add location to your story.';
+
+  @override
+  String get location_pick_btn => 'Add location from map';
+
+  @override
+  String get location_change => 'Change';
+
+  @override
+  String get location_clear => 'Remove';
+
+  @override
+  String get location_picker_title => 'Pick Location';
+
+  @override
+  String get location_picker_hint => 'Tap anywhere on the map to drop a pin.';
+
+  @override
+  String get location_picker_confirm => 'Confirm';
+
+  @override
+  String get location_picker_clear => 'Clear pin';
 }

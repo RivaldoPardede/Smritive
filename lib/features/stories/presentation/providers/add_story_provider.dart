@@ -17,8 +17,8 @@ class AddStoryProvider extends ChangeNotifier {
   AddStoryProvider({
     required StoryRepository repository,
     required AuthProvider authProvider,
-  }) : _repository = repository,
-       _authProvider = authProvider;
+  })  : _repository = repository,
+        _authProvider = authProvider;
 
   final StoryRepository _repository;
   final AuthProvider _authProvider;
@@ -27,10 +27,13 @@ class AddStoryProvider extends ChangeNotifier {
   AddStoryStatus _status = AddStoryStatus.idle;
   XFile? _selectedImage;
   String? _errorMessage;
-
-  /// True when the last picked image exceeded the 1 MB limit.
-  /// The UI reads this flag, shows the localized SnackBar, then calls [clearOversizeFlag].
   bool _photoOversize = false;
+
+  // ── Location state (paid variant only) ────────────────────────────────────
+  double? _selectedLat;
+  double? _selectedLon;
+
+  // ── Getters ───────────────────────────────────────────────────────────────
 
   AddStoryStatus get status => _status;
   XFile? get selectedImage => _selectedImage;
@@ -38,15 +41,16 @@ class AddStoryProvider extends ChangeNotifier {
   bool get photoOversize => _photoOversize;
   bool get isLoading => _status == AddStoryStatus.loading;
   bool get isSuccess => _status == AddStoryStatus.success;
+  double? get selectedLat => _selectedLat;
+  double? get selectedLon => _selectedLon;
+  bool get hasLocation => _selectedLat != null && _selectedLon != null;
 
   bool get canSubmit =>
       _selectedImage != null && _status != AddStoryStatus.loading;
 
-  // ---------------------------------------------------------------- image
+  // ── Image ─────────────────────────────────────────────────────────────────
 
   /// Picks an image from [source]. Validates 1 MB limit.
-  /// Sets [photoOversize] if file is too large — caller must show SnackBar
-  /// using [AppLocalizations.error_photo_too_large] then call [clearOversizeFlag].
   Future<void> pickImage(ImageSource source) async {
     final XFile? file = await _picker.pickImage(
       source: source,
@@ -77,9 +81,25 @@ class AddStoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --------------------------------------------------------------- submit
+  // ── Location ──────────────────────────────────────────────────────────────
 
-  /// Uploads the story. On success sets [status] to [AddStoryStatus.success].
+  /// Sets the chosen location coordinates (paid variant only).
+  void setLocation(double lat, double lon) {
+    _selectedLat = lat;
+    _selectedLon = lon;
+    notifyListeners();
+  }
+
+  /// Clears the selected location.
+  void clearLocation() {
+    _selectedLat = null;
+    _selectedLon = null;
+    notifyListeners();
+  }
+
+  // ── Submit ────────────────────────────────────────────────────────────────
+
+  /// Uploads the story with optional location coordinates.
   Future<void> submit({required String description}) async {
     if (_selectedImage == null) return;
 
@@ -95,6 +115,8 @@ class AddStoryProvider extends ChangeNotifier {
         description: description,
         photoBytes: photoBytes,
         photoFilename: _selectedImage!.name,
+        lat: _selectedLat,
+        lon: _selectedLon,
       );
       if (result['error'] == true) {
         throw Exception(result['message'] as String? ?? 'Upload failed');

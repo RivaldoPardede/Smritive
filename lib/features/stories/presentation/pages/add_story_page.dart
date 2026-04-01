@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/config/flavor_config.dart';
 import '../../../../core/network/api_service.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -153,7 +156,6 @@ class _AddStoryViewState extends State<_AddStoryView> {
 
     if (provider.isSuccess) {
       // Signal success back to StoryListPage via pop result.
-      // StoryListPage awaits this and calls refresh() in its own valid scope.
       context.pop(true);
     } else if (provider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -162,6 +164,15 @@ class _AddStoryViewState extends State<_AddStoryView> {
           backgroundColor: AppColors.error,
         ),
       );
+    }
+  }
+
+  // ── Location picker ────────────────────────────────────────────────────────
+
+  Future<void> _openLocationPicker(AddStoryProvider provider) async {
+    final result = await context.push<LatLng>(AppRoutes.locationPicker);
+    if (result != null && mounted) {
+      provider.setLocation(result.latitude, result.longitude);
     }
   }
 
@@ -196,7 +207,7 @@ class _AddStoryViewState extends State<_AddStoryView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Image Picker Area ────────────────────────────────────
+                  // ── Image Picker Area ──────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.md,
@@ -222,7 +233,7 @@ class _AddStoryViewState extends State<_AddStoryView> {
                     ),
                   ),
 
-                  // ── Description Field ────────────────────────────────────
+                  // ── Description Field ──────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.md,
@@ -246,7 +257,14 @@ class _AddStoryViewState extends State<_AddStoryView> {
                     ),
                   ),
 
-                  // ── Submit Button ────────────────────────────────────────
+                  // ── Location Section (flavor-gated) ────────────────────────
+                  _LocationSection(
+                    provider: provider,
+                    l10n: l10n,
+                    onPickLocation: () => _openLocationPicker(provider),
+                  ),
+
+                  // ── Submit Button ──────────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     child: SizedBox(
@@ -283,6 +301,182 @@ class _AddStoryViewState extends State<_AddStoryView> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+// ── Location Section ──────────────────────────────────────────────────────────
+
+class _LocationSection extends StatelessWidget {
+  const _LocationSection({
+    required this.provider,
+    required this.l10n,
+    required this.onPickLocation,
+  });
+
+  final AddStoryProvider provider;
+  final AppLocalizations l10n;
+  final VoidCallback onPickLocation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.md,
+        0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.location_on, size: 18, color: AppColors.primary),
+              const SizedBox(width: AppSpacing.xs),
+              Text(l10n.location_section_label, style: AppTextStyles.sectionHeader),
+              const Spacer(),
+              if (FlavorConfig.isPaid && provider.hasLocation)
+                TextButton(
+                  onPressed: provider.clearLocation,
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(44, 32),
+                  ),
+                  child: Text(
+                    l10n.location_clear,
+                    style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+
+          if (FlavorConfig.isFree) ...[
+            // Free variant: disabled explanation
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(color: AppColors.divider),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.lock_outline, size: 18, color: AppColors.textHint),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.location_free_locked,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ] else ...[
+            // Paid variant: pick location button or selected preview
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: provider.hasLocation
+                  ? _LocationPreview(
+                      key: const ValueKey('preview'),
+                      lat: provider.selectedLat!,
+                      lon: provider.selectedLon!,
+                      onEdit: onPickLocation,
+                      l10n: l10n,
+                    )
+                  : _PickLocationButton(
+                      key: const ValueKey('picker'),
+                      onTap: onPickLocation,
+                      l10n: l10n,
+                    ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PickLocationButton extends StatelessWidget {
+  const _PickLocationButton({super.key, required this.onTap, required this.l10n});
+
+  final VoidCallback onTap;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: const Icon(Icons.add_location_alt_outlined),
+      label: Text(l10n.location_pick_btn),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.primary,
+        side: const BorderSide(color: AppColors.primary),
+        minimumSize: const Size(double.infinity, 48),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+      ),
+    );
+  }
+}
+
+class _LocationPreview extends StatelessWidget {
+  const _LocationPreview({
+    super.key,
+    required this.lat,
+    required this.lon,
+    required this.onEdit,
+    required this.l10n,
+  });
+
+  final double lat;
+  final double lon;
+  final VoidCallback onEdit;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primaryLight,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.primary.withAlpha(60)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle, size: 18, color: AppColors.primary),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              '${lat.toStringAsFixed(5)}, ${lon.toStringAsFixed(5)}',
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.primary,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: onEdit,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(44, 32),
+            ),
+            child: Text(
+              l10n.location_change,
+              style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+            ),
+          ),
+        ],
       ),
     );
   }

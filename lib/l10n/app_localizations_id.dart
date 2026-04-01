@@ -166,4 +166,33 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get map_address_error => 'Gagal memuat alamat. Silakan coba lagi.';
+
+  @override
+  String get location_section_label => 'Lokasi (opsional)';
+
+  @override
+  String get location_free_locked =>
+      'Upgrade ke versi berbayar untuk menambahkan lokasi ke ceritamu.';
+
+  @override
+  String get location_pick_btn => 'Tambah lokasi dari peta';
+
+  @override
+  String get location_change => 'Ubah';
+
+  @override
+  String get location_clear => 'Hapus';
+
+  @override
+  String get location_picker_title => 'Pilih Lokasi';
+
+  @override
+  String get location_picker_hint =>
+      'Ketuk di mana saja di peta untuk menandai titik.';
+
+  @override
+  String get location_picker_confirm => 'Konfirmasi';
+
+  @override
+  String get location_picker_clear => 'Hapus pin';
 }
