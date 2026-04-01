@@ -157,4 +157,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get end_of_list => 'Sudah semua ditampilkan';
+
+  @override
+  String get map_section_label => 'Lokasi';
+
+  @override
+  String get map_tap_hint => 'Ketuk pin untuk melihat alamat';
+
+  @override
+  String get map_address_error => 'Gagal memuat alamat. Silakan coba lagi.';
 }

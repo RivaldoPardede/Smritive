@@ -158,4 +158,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get end_of_list => 'You\'ve seen it all';
+
+  @override
+  String get map_section_label => 'Location';
+
+  @override
+  String get map_tap_hint => 'Tap the pin to see the address';
+
+  @override
+  String get map_address_error => 'Could not load address. Please try again.';
 }

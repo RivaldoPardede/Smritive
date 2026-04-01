@@ -391,6 +391,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'ve seen it all'**
   String get end_of_list;
+
+  /// Map section header on story detail page
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get map_section_label;
+
+  /// Hint below map before user taps the marker
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the pin to see the address'**
+  String get map_tap_hint;
+
+  /// Error message when reverse geocoding fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load address. Please try again.'**
+  String get map_address_error;
 }
 
 class _AppLocalizationsDelegate

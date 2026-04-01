@@ -150,5 +150,14 @@
   "@btn_retry": { "description": "Retry button label" },
 
   "end_of_list": "You've seen it all",
-  "@end_of_list": { "description": "End of paginated list message" }
+  "@end_of_list": { "description": "End of paginated list message" },
+
+  "map_section_label": "Location",
+  "@map_section_label": { "description": "Map section header on story detail page" },
+
+  "map_tap_hint": "Tap the pin to see the address",
+  "@map_tap_hint": { "description": "Hint below map before user taps the marker" },
+
+  "map_address_error": "Could not load address. Please try again.",
+  "@map_address_error": { "description": "Error message when reverse geocoding fails" }
 }

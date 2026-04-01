@@ -150,5 +150,14 @@
   "@btn_retry": { "description": "Tombol coba lagi" },
 
   "end_of_list": "Sudah semua ditampilkan",
-  "@end_of_list": { "description": "Pesan akhir daftar cerita" }
+  "@end_of_list": { "description": "Pesan akhir daftar cerita" },
+
+  "map_section_label": "Lokasi",
+  "@map_section_label": { "description": "Header bagian peta di halaman detail cerita" },
+
+  "map_tap_hint": "Ketuk pin untuk melihat alamat",
+  "@map_tap_hint": { "description": "Petunjuk sebelum pengguna mengetuk marker" },
+
+  "map_address_error": "Gagal memuat alamat. Silakan coba lagi.",
+  "@map_address_error": { "description": "Pesan error ketika reverse geocoding gagal" }
 }
