@@ -20,14 +20,34 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.smritive"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+    }
+
+    // ── Build Variants ───────────────────────────────────────────────────────
+    // Defines two product flavors: free and paid.
+    // Usage:
+    //   flutter run --flavor free  --dart-define=FLAVOR=free
+    //   flutter run --flavor paid  --dart-define=FLAVOR=paid
+    //
+    // The `dimension` field is required when using productFlavors in Gradle.
+    flavorDimensions += "tier"
+
+    productFlavors {
+        create("free") {
+            dimension = "tier"
+            applicationIdSuffix = ".free"
+            versionNameSuffix = "-free"
+            resValue("string", "app_name", "Smritive Free")
+        }
+        create("paid") {
+            dimension = "tier"
+            // No suffix for the paid (full) variant — this is the canonical app.
+            resValue("string", "app_name", "Smritive")
+        }
     }
 
     buildTypes {
