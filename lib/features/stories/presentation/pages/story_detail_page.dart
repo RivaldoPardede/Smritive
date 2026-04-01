@@ -104,76 +104,98 @@ class _DetailContent extends StatelessWidget {
             height: MediaQuery.of(context).size.width,
             constraints: const BoxConstraints(maxHeight: 500),
             color: AppColors.surfaceVariant,
-            child: Image.network(
-              story.photoUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stack) => const Center(
-                child: Icon(
-                  Icons.broken_image_outlined,
-                  size: 48,
-                  color: AppColors.textHint,
+            child: Hero(
+              tag: 'story-image-${story.id}',
+              child: Image.network(
+                story.photoUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stack) => const Center(
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    size: 48,
+                    color: AppColors.textHint,
+                  ),
                 ),
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  );
+                },
               ),
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return const Center(
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                );
-              },
             ),
           ),
 
           // ── Content ───────────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-            ).copyWith(top: AppSpacing.md),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return Transform.translate(
+                offset: Offset(0, 30 * (1 - value)),
+                child: Opacity(
+                  opacity: value,
+                  child: child,
+                ),
+              );
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Author name
-                Text(
-                  story.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ).copyWith(top: AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Author name
+                      Text(
+                        story.name,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+
+                      // Date posted
+                      Text(_formatDate(story.createdAt), style: AppTextStyles.author),
+
+                      const Divider(color: AppColors.divider, height: AppSpacing.xl),
+
+                      // "The Story" section label
+                      Text(
+                        l10n.story_section_label,
+                        style: AppTextStyles.sectionHeader,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+
+                      // Description body
+                      Text(
+                        story.description,
+                        style: AppTextStyles.body.copyWith(height: 1.6),
+                      ),
+
+                      const SizedBox(height: AppSpacing.xl),
+                    ],
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
 
-                // Date posted
-                Text(_formatDate(story.createdAt), style: AppTextStyles.author),
-
-                const Divider(color: AppColors.divider, height: AppSpacing.xl),
-
-                // "The Story" section label
-                Text(
-                  l10n.story_section_label,
-                  style: AppTextStyles.sectionHeader,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-
-                // Description body
-                Text(
-                  story.description,
-                  style: AppTextStyles.body.copyWith(height: 1.6),
-                ),
+                // ── Map Section (only when coordinates exist) ─────────────────────
+                if (story.hasLocation)
+                  _MapSection(
+                    lat: story.lat!,
+                    lon: story.lon!,
+                    l10n: l10n,
+                  ),
 
                 const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),
-
-          // ── Map Section (only when coordinates exist) ─────────────────────
-          if (story.hasLocation)
-            _MapSection(
-              lat: story.lat!,
-              lon: story.lon!,
-              l10n: l10n,
-            ),
-
-          const SizedBox(height: AppSpacing.xl),
         ],
       ),
     );

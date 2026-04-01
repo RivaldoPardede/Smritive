@@ -415,22 +415,25 @@ class _FeedPost extends StatelessWidget {
               ).size.width, // 1:1 aspect ratio square like classic IG
               constraints: const BoxConstraints(maxHeight: 500),
               color: AppColors.surfaceVariant,
-              child: Image.network(
-                story.photoUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stack) => const Center(
-                  child: Icon(
-                    Icons.broken_image_outlined,
-                    size: 48,
-                    color: AppColors.textHint,
+              child: Hero(
+                tag: 'story-image-${story.id}',
+                child: Image.network(
+                  story.photoUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stack) => const Center(
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      size: 48,
+                      color: AppColors.textHint,
+                    ),
                   ),
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    );
+                  },
                 ),
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  );
-                },
               ),
             ),
           ),
