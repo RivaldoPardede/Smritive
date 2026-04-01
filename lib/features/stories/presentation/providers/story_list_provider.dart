@@ -14,9 +14,9 @@ class StoryListProvider extends ChangeNotifier {
     required StoryRepository repository,
     required String token,
     int pageSize = 10,
-  })  : _repository = repository,
-        _token = token,
-        _pageSize = pageSize;
+  }) : _repository = repository,
+       _token = token,
+       _pageSize = pageSize;
 
   final StoryRepository _repository;
   final String _token;

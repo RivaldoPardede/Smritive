@@ -105,8 +105,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
               ),
               children: [
                 TileLayer(
-                  urlTemplate:
-                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.smritive',
                 ),
                 if (_pickedPoint != null)

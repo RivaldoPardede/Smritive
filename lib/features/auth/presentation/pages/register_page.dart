@@ -79,10 +79,7 @@ class _RegisterViewState extends State<_RegisterView> {
               builder: (context, value, child) {
                 return Transform.translate(
                   offset: Offset(0, 50 * (1 - value)),
-                  child: Opacity(
-                    opacity: value,
-                    child: child,
-                  ),
+                  child: Opacity(opacity: value, child: child),
                 );
               },
               child: Container(
@@ -99,173 +96,175 @@ class _RegisterViewState extends State<_RegisterView> {
                     AppSpacing.lg,
                     AppSpacing.md,
                   ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.register_title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        l10n.register_subtitle,
-                        style: AppTextStyles.body.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-
-                      // Name
-                      TextFormField(
-                        controller: _nameController,
-                        keyboardType: TextInputType.name,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(
-                          labelText: l10n.field_name,
-                          prefixIcon: const Icon(
-                            Icons.person_outline,
-                            color: AppColors.primary,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.register_title,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
                           ),
                         ),
-                        validator: (v) {
-                          final l10n = AppLocalizations.of(context)!;
-                          return (v == null || v.trim().isEmpty)
-                              ? l10n.validation_required
-                              : null;
-                        },
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Email
-                      TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          labelText: l10n.field_email,
-                          prefixIcon: const Icon(
-                            Icons.email_outlined,
-                            color: AppColors.primary,
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          l10n.register_subtitle,
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.textSecondary,
                           ),
                         ),
-                        validator: (v) {
-                          final l10n = AppLocalizations.of(context)!;
-                          return (v == null || v.trim().isEmpty)
-                              ? l10n.validation_required
-                              : null;
-                        },
-                      ),
-                      const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.lg),
 
-                      // Password
-                      ValueListenableBuilder<bool>(
-                        valueListenable: _passwordVisible,
-                        builder: (context, visible, child) => TextFormField(
-                          controller: _passwordController,
-                          obscureText: !visible,
+                        // Name
+                        TextFormField(
+                          controller: _nameController,
+                          keyboardType: TextInputType.name,
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
-                            labelText: l10n.field_password,
+                            labelText: l10n.field_name,
                             prefixIcon: const Icon(
-                              Icons.lock_outline,
+                              Icons.person_outline,
                               color: AppColors.primary,
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                visible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: AppColors.textSecondary,
-                              ),
-                              onPressed: () =>
-                                  _passwordVisible.value = !visible,
                             ),
                           ),
                           validator: (v) {
                             final l10n = AppLocalizations.of(context)!;
-                            if (v == null || v.isEmpty) {
-                              return l10n.validation_required;
-                            }
-                            if (v.length < 8) {
-                              return l10n.validation_password_min;
-                            }
-                            return null;
+                            return (v == null || v.trim().isEmpty)
+                                ? l10n.validation_required
+                                : null;
                           },
                         ),
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
+                        const SizedBox(height: AppSpacing.md),
 
-                      // Register button
-                      Consumer<RegisterProvider>(
-                        builder: (context, provider, child) => SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: FilledButton(
-                            onPressed: provider.isLoading
-                                ? null
-                                : () => _submit(provider),
-                            child: provider.isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  )
-                                : Text(l10n.btn_register),
+                        // Email
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            labelText: l10n.field_email,
+                            prefixIcon: const Icon(
+                              Icons.email_outlined,
+                              color: AppColors.primary,
+                            ),
                           ),
+                          validator: (v) {
+                            final l10n = AppLocalizations.of(context)!;
+                            return (v == null || v.trim().isEmpty)
+                                ? l10n.validation_required
+                                : null;
+                          },
                         ),
-                      ),
+                        const SizedBox(height: AppSpacing.md),
 
-                      // Error message
-                      Consumer<RegisterProvider>(
-                        builder: (context, provider, child) {
-                          final msg = provider.errorMessage;
-                          if (msg == null) return const SizedBox.shrink();
-                          return Padding(
-                            padding: const EdgeInsets.only(top: AppSpacing.sm),
-                            child: Center(
-                              child: Text(
-                                msg,
-                                style: AppTextStyles.body.copyWith(
-                                  color: AppColors.error,
+                        // Password
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _passwordVisible,
+                          builder: (context, visible, child) => TextFormField(
+                            controller: _passwordController,
+                            obscureText: !visible,
+                            decoration: InputDecoration(
+                              labelText: l10n.field_password,
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: AppColors.primary,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  visible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: AppColors.textSecondary,
                                 ),
-                                textAlign: TextAlign.center,
+                                onPressed: () =>
+                                    _passwordVisible.value = !visible,
                               ),
                             ),
-                          );
-                        },
-                      ),
+                            validator: (v) {
+                              final l10n = AppLocalizations.of(context)!;
+                              if (v == null || v.isEmpty) {
+                                return l10n.validation_required;
+                              }
+                              if (v.length < 8) {
+                                return l10n.validation_password_min;
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
 
-                      // Login redirect
-                      const SizedBox(height: AppSpacing.md),
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                            style: AppTextStyles.body.copyWith(
-                              color: AppColors.textSecondary,
+                        // Register button
+                        Consumer<RegisterProvider>(
+                          builder: (context, provider, child) => SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: FilledButton(
+                              onPressed: provider.isLoading
+                                  ? null
+                                  : () => _submit(provider),
+                              child: provider.isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    )
+                                  : Text(l10n.btn_register),
                             ),
-                            children: [
-                              TextSpan(text: l10n.auth_have_account),
-                              WidgetSpan(
-                                child: GestureDetector(
-                                  onTap: () => context.pop(),
-                                  child: Text(
-                                    l10n.btn_login,
-                                    style: AppTextStyles.link,
+                          ),
+                        ),
+
+                        // Error message
+                        Consumer<RegisterProvider>(
+                          builder: (context, provider, child) {
+                            final msg = provider.errorMessage;
+                            if (msg == null) return const SizedBox.shrink();
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.sm,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  msg,
+                                  style: AppTextStyles.body.copyWith(
+                                    color: AppColors.error,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+                        // Login redirect
+                        const SizedBox(height: AppSpacing.md),
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                              children: [
+                                TextSpan(text: l10n.auth_have_account),
+                                WidgetSpan(
+                                  child: GestureDetector(
+                                    onTap: () => context.pop(),
+                                    child: Text(
+                                      l10n.btn_login,
+                                      style: AppTextStyles.link,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
             ),
           ),
         ],

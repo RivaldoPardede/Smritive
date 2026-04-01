@@ -9,21 +9,22 @@ import 'package:http/http.dart' as http;
 /// Rate limit: 1 request/second. For a submission app this is fine.
 class GeocodingRepository {
   GeocodingRepository({http.Client? client})
-      : _client = client ?? http.Client();
+    : _client = client ?? http.Client();
 
   final http.Client _client;
 
-  static const String _baseUrl =
-      'https://nominatim.openstreetmap.org/reverse';
+  static const String _baseUrl = 'https://nominatim.openstreetmap.org/reverse';
 
   /// Returns a formatted address string for [lat]/[lon].
   /// Throws [GeocodingException] on network or API errors.
   Future<String> getAddress(double lat, double lon) async {
-    final uri = Uri.parse(_baseUrl).replace(queryParameters: {
-      'lat': lat.toString(),
-      'lon': lon.toString(),
-      'format': 'json',
-    });
+    final uri = Uri.parse(_baseUrl).replace(
+      queryParameters: {
+        'lat': lat.toString(),
+        'lon': lon.toString(),
+        'format': 'json',
+      },
+    );
 
     final response = await _client.get(
       uri,

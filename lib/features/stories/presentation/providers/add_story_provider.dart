@@ -17,8 +17,8 @@ class AddStoryProvider extends ChangeNotifier {
   AddStoryProvider({
     required StoryRepository repository,
     required AuthProvider authProvider,
-  })  : _repository = repository,
-        _authProvider = authProvider;
+  }) : _repository = repository,
+       _authProvider = authProvider;
 
   final StoryRepository _repository;
   final AuthProvider _authProvider;

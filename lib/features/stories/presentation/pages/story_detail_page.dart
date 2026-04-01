@@ -134,10 +134,7 @@ class _DetailContent extends StatelessWidget {
             builder: (context, value, child) {
               return Transform.translate(
                 offset: Offset(0, 30 * (1 - value)),
-                child: Opacity(
-                  opacity: value,
-                  child: child,
-                ),
+                child: Opacity(opacity: value, child: child),
               );
             },
             child: Column(
@@ -162,9 +159,15 @@ class _DetailContent extends StatelessWidget {
                       const SizedBox(height: AppSpacing.xs),
 
                       // Date posted
-                      Text(_formatDate(story.createdAt), style: AppTextStyles.author),
+                      Text(
+                        _formatDate(story.createdAt),
+                        style: AppTextStyles.author,
+                      ),
 
-                      const Divider(color: AppColors.divider, height: AppSpacing.xl),
+                      const Divider(
+                        color: AppColors.divider,
+                        height: AppSpacing.xl,
+                      ),
 
                       // "The Story" section label
                       Text(
@@ -186,11 +189,7 @@ class _DetailContent extends StatelessWidget {
 
                 // ── Map Section (only when coordinates exist) ─────────────────────
                 if (story.hasLocation)
-                  _MapSection(
-                    lat: story.lat!,
-                    lon: story.lon!,
-                    l10n: l10n,
-                  ),
+                  _MapSection(lat: story.lat!, lon: story.lon!, l10n: l10n),
 
                 const SizedBox(height: AppSpacing.xl),
               ],
@@ -205,11 +204,7 @@ class _DetailContent extends StatelessWidget {
 // ── Map Section ───────────────────────────────────────────────────────────────
 
 class _MapSection extends StatefulWidget {
-  const _MapSection({
-    required this.lat,
-    required this.lon,
-    required this.l10n,
-  });
+  const _MapSection({required this.lat, required this.lon, required this.l10n});
 
   final double lat;
   final double lon;
@@ -272,11 +267,7 @@ class _MapSectionState extends State<_MapSection> {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.location_on,
-                color: AppColors.primary,
-                size: 18,
-              ),
+              const Icon(Icons.location_on, color: AppColors.primary, size: 18),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 widget.l10n.map_section_label,
@@ -290,9 +281,7 @@ class _MapSectionState extends State<_MapSection> {
         SizedBox(
           height: 240,
           child: ClipRRect(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(AppRadius.lg),
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(AppRadius.lg)),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: FlutterMap(

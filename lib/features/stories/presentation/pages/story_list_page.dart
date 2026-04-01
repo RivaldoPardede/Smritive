@@ -147,13 +147,15 @@ class _StoryListPageState extends State<StoryListPage> {
             // ── Pagination Footer ────────────────────────────────────────────
             Consumer<StoryListProvider>(
               builder: (context, provider, _) {
-                if (!provider.isLoading && provider.status == StoryListStatus.loaded) {
+                if (!provider.isLoading &&
+                    provider.status == StoryListStatus.loaded) {
                   return SliverToBoxAdapter(
                     child: _PaginationFooter(
                       isLoadingMore: provider.isLoadingMore,
                       hasMore: provider.hasMore,
                       loadMoreError: provider.loadMoreError,
-                      onRetry: () => context.read<StoryListProvider>().loadMore(),
+                      onRetry: () =>
+                          context.read<StoryListProvider>().loadMore(),
                       l10n: l10n,
                     ),
                   );
@@ -239,9 +241,7 @@ class _PaginationFooter extends StatelessWidget {
     if (isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
-        child: Center(
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
       );
     }
     if (loadMoreError != null) {
@@ -254,10 +254,7 @@ class _PaginationFooter extends StatelessWidget {
               style: AppTextStyles.caption.copyWith(color: AppColors.error),
               textAlign: TextAlign.center,
             ),
-            TextButton(
-              onPressed: onRetry,
-              child: Text(l10n.btn_retry),
-            ),
+            TextButton(onPressed: onRetry, child: Text(l10n.btn_retry)),
           ],
         ),
       );

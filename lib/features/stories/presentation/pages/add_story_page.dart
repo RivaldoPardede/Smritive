@@ -335,7 +335,10 @@ class _LocationSection extends StatelessWidget {
             children: [
               const Icon(Icons.location_on, size: 18, color: AppColors.primary),
               const SizedBox(width: AppSpacing.xs),
-              Text(l10n.location_section_label, style: AppTextStyles.sectionHeader),
+              Text(
+                l10n.location_section_label,
+                style: AppTextStyles.sectionHeader,
+              ),
               const Spacer(),
               if (FlavorConfig.isPaid && provider.hasLocation)
                 TextButton(
@@ -346,7 +349,9 @@ class _LocationSection extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.location_clear,
-                    style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.error,
+                    ),
                   ),
                 ),
             ],
@@ -364,7 +369,11 @@ class _LocationSection extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.lock_outline, size: 18, color: AppColors.textHint),
+                  const Icon(
+                    Icons.lock_outline,
+                    size: 18,
+                    color: AppColors.textHint,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
@@ -403,7 +412,11 @@ class _LocationSection extends StatelessWidget {
 }
 
 class _PickLocationButton extends StatelessWidget {
-  const _PickLocationButton({super.key, required this.onTap, required this.l10n});
+  const _PickLocationButton({
+    super.key,
+    required this.onTap,
+    required this.l10n,
+  });
 
   final VoidCallback onTap;
   final AppLocalizations l10n;
