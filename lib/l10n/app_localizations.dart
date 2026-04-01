@@ -379,6 +379,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turn fleeting moments into everlasting stories.'**
   String get auth_tagline;
+
+  /// Retry button label
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get btn_retry;
+
+  /// End of paginated list message
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve seen it all'**
+  String get end_of_list;
 }
 
 class _AppLocalizationsDelegate

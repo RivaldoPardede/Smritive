@@ -144,5 +144,11 @@
   "@lang_switch_label_inverse": { "description": "Label saat bahasa saat ini EN; ketuk untuk ke ID" },
 
   "auth_tagline": "Ubah momen singkat menjadi cerita abadi.",
-  "@auth_tagline": { "description": "Persuasive catchphrase shown on login and register screens" }
+  "@auth_tagline": { "description": "Persuasive catchphrase shown on login and register screens" },
+
+  "btn_retry": "Coba Lagi",
+  "@btn_retry": { "description": "Tombol coba lagi" },
+
+  "end_of_list": "Sudah semua ditampilkan",
+  "@end_of_list": { "description": "Pesan akhir daftar cerita" }
 }

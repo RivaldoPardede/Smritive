@@ -152,4 +152,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auth_tagline => 'Turn fleeting moments into everlasting stories.';
+
+  @override
+  String get btn_retry => 'Retry';
+
+  @override
+  String get end_of_list => 'You\'ve seen it all';
 }

@@ -1,4 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'story.g.dart';
+
 /// Story domain model — fields mapped directly from the Dicoding API response.
+@JsonSerializable()
 class Story {
   const Story({
     required this.id,
@@ -18,15 +23,10 @@ class Story {
   final double? lat;
   final double? lon;
 
-  factory Story.fromJson(Map<String, dynamic> json) {
-    return Story(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      photoUrl: json['photoUrl'] as String,
-      createdAt: json['createdAt'] as String,
-      lat: (json['lat'] as num?)?.toDouble(),
-      lon: (json['lon'] as num?)?.toDouble(),
-    );
-  }
+  /// Whether this story has valid map coordinates.
+  bool get hasLocation => lat != null && lon != null;
+
+  factory Story.fromJson(Map<String, dynamic> json) => _$StoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StoryToJson(this);
 }

@@ -21,12 +21,30 @@ class StoryListPage extends StatefulWidget {
 }
 
 class _StoryListPageState extends State<StoryListPage> {
+  late final ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<StoryListProvider>().fetch();
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final pos = _scrollController.position;
+    // Trigger loadMore when within 300px of the bottom
+    if (pos.pixels >= pos.maxScrollExtent - 300) {
+      context.read<StoryListProvider>().loadMore();
+    }
   }
 
   @override
@@ -58,6 +76,7 @@ class _StoryListPageState extends State<StoryListPage> {
         color: AppColors.primary,
         onRefresh: () => context.read<StoryListProvider>().refresh(),
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             // ── SliverAppBar ────────────────────────────────────────────────
             SliverAppBar(
@@ -101,22 +120,50 @@ class _StoryListPageState extends State<StoryListPage> {
             ),
 
             // ── Content ─────────────────────────────────────────────────────
-            SliverToBoxAdapter(
-              child: Consumer<StoryListProvider>(
-                builder: (context, provider, child) {
-                  if (provider.isLoading) return const _LoadingSkeleton();
-                  if (provider.hasError) {
-                    return _ErrorState(
+            Consumer<StoryListProvider>(
+              builder: (context, provider, child) {
+                if (provider.isLoading) {
+                  return const SliverToBoxAdapter(child: _LoadingSkeleton());
+                }
+                if (provider.hasError) {
+                  return SliverToBoxAdapter(
+                    child: _ErrorState(
                       message: provider.errorMessage ?? '',
                       l10n: l10n,
                       onRetry: () => context.read<StoryListProvider>().fetch(),
-                    );
-                  }
-                  if (provider.isEmpty) return _EmptyState(l10n: l10n);
-                  return _StoryContent(stories: provider.stories, l10n: l10n);
-                },
-              ),
+                    ),
+                  );
+                }
+                if (provider.isEmpty) {
+                  return SliverToBoxAdapter(child: _EmptyState(l10n: l10n));
+                }
+                return _StoryContentSliver(
+                  stories: provider.stories,
+                  l10n: l10n,
+                );
+              },
             ),
+
+            // ── Pagination Footer ────────────────────────────────────────────
+            Consumer<StoryListProvider>(
+              builder: (context, provider, _) {
+                if (!provider.isLoading && provider.status == StoryListStatus.loaded) {
+                  return SliverToBoxAdapter(
+                    child: _PaginationFooter(
+                      isLoadingMore: provider.isLoadingMore,
+                      hasMore: provider.hasMore,
+                      loadMoreError: provider.loadMoreError,
+                      onRetry: () => context.read<StoryListProvider>().loadMore(),
+                      l10n: l10n,
+                    ),
+                  );
+                }
+                return const SliverToBoxAdapter(child: SizedBox.shrink());
+              },
+            ),
+
+            // FAB clearance
+            const SliverToBoxAdapter(child: SizedBox(height: 96)),
           ],
         ),
       ),
@@ -124,52 +171,109 @@ class _StoryListPageState extends State<StoryListPage> {
   }
 }
 
-// ── Story Content (Loaded) ────────────────────────────────────────────────────
+// ── Story Content Sliver (Loaded) ─────────────────────────────────────────────
 
-class _StoryContent extends StatelessWidget {
-  const _StoryContent({required this.stories, required this.l10n});
+class _StoryContentSliver extends StatelessWidget {
+  const _StoryContentSliver({required this.stories, required this.l10n});
 
   final List<Story> stories;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ── Section 1: Story Rings (Horizontal) ─────────────────────────
-        SizedBox(
-          height: 110,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            itemCount: stories.length,
-            itemBuilder: (context, i) => Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.md),
-              child: _StoryRing(story: stories[i]),
+    return SliverMainAxisGroup(
+      slivers: [
+        // ── Story Rings (Horizontal) ─────────────────────────────────────────
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 110,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              itemCount: stories.length,
+              itemBuilder: (context, i) => Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.md),
+                child: _StoryRing(story: stories[i]),
+              ),
             ),
           ),
         ),
+        const SliverToBoxAdapter(
+          child: Divider(height: 1, color: AppColors.divider),
+        ),
 
-        const Divider(height: 1, color: AppColors.divider),
-
-        // ── Section 2: The Feed (Vertical) ──────────────────────────────
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
+        // ── Feed Posts ───────────────────────────────────────────────────────
+        SliverList.separated(
           itemCount: stories.length,
           itemBuilder: (context, i) => _FeedPost(story: stories[i]),
           separatorBuilder: (context, i) =>
               const Divider(color: AppColors.divider, thickness: 1, height: 24),
         ),
-
-        const SizedBox(height: 96), // FAB clearance
       ],
     );
+  }
+}
+
+// ── Pagination Footer ─────────────────────────────────────────────────────────
+
+class _PaginationFooter extends StatelessWidget {
+  const _PaginationFooter({
+    required this.isLoadingMore,
+    required this.hasMore,
+    required this.loadMoreError,
+    required this.onRetry,
+    required this.l10n,
+  });
+
+  final bool isLoadingMore;
+  final bool hasMore;
+  final String? loadMoreError;
+  final VoidCallback onRetry;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoadingMore) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        child: Center(
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    }
+    if (loadMoreError != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        child: Column(
+          children: [
+            Text(
+              loadMoreError!,
+              style: AppTextStyles.caption.copyWith(color: AppColors.error),
+              textAlign: TextAlign.center,
+            ),
+            TextButton(
+              onPressed: onRetry,
+              child: Text(l10n.btn_retry),
+            ),
+          ],
+        ),
+      );
+    }
+    if (!hasMore) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        child: Center(
+          child: Text(
+            '— ${l10n.end_of_list} —',
+            style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 }
 

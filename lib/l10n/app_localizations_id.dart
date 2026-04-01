@@ -151,4 +151,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get auth_tagline => 'Ubah momen singkat menjadi cerita abadi.';
+
+  @override
+  String get btn_retry => 'Coba Lagi';
+
+  @override
+  String get end_of_list => 'Sudah semua ditampilkan';
 }
