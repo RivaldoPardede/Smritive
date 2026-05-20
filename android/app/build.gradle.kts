@@ -41,12 +41,12 @@ android {
             dimension = "tier"
             applicationIdSuffix = ".free"
             versionNameSuffix = "-free"
-            resValue("string", "app_name", "Smritive Free")
+            // app_name + launcher icons supplied by android/app/src/free/res/
         }
         create("paid") {
             dimension = "tier"
             // No suffix for the paid (full) variant — this is the canonical app.
-            resValue("string", "app_name", "Smritive")
+            // app_name + launcher icons supplied by android/app/src/paid/res/
         }
     }
 

@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Free flavor uses the same brand navy; differentiated through icon foreground tint. -->
+    <color name="ic_launcher_background">#060d21</color>
+</resources>

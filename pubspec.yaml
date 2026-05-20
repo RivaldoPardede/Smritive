@@ -22,8 +22,6 @@ dependencies:
   http: ^1.2.2
   image_picker: ^1.1.2
   google_fonts: ^8.0.2
-  flutter_launcher_icons: ^0.14.4
-  flutter_native_splash: ^2.4.7
   json_annotation: ^4.9.0
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
@@ -42,19 +40,11 @@ flutter:
   assets:
     - assets/icons/custom/
 
-flutter_launcher_icons:
-  android: true
-  image_path: "assets/icons/custom/smritive-icon.png"
-  min_sdk_android: 21
-  adaptive_icon_background: "#060d21"
-  adaptive_icon_foreground: "assets/icons/custom/smritive-icon.png"
+# Launcher icons and the native splash screen are configured manually:
+#  - Per-flavor adaptive icons live in android/app/src/{free,paid}/res/.
+#  - Legacy splash:   android/app/src/main/res/drawable/launch_background.xml.
+#  - Android 12+ splash: android/app/src/main/res/values-v31/styles.xml.
+#  - Regenerate icon assets from assets/icons/custom/smritive-icon.png with:
+#       pwsh tool/gen_icons.ps1
+#  - The animated splash on the Flutter side is in lib/core/splash/.
 
-flutter_native_splash:
-  color: "#060d21"
-  image: "assets/icons/custom/smritive-icon.png"
-  android: true
-  android_gravity: center
-  branding_bottom_padding: 24
-  android_12:
-    color: "#060d21"
-    image: "assets/icons/custom/smritive-icon.png"
