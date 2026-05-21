@@ -1,7 +1,7 @@
 name: smritive
 description: "Smritive — preserve and share your story memories."
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -39,12 +39,3 @@ flutter:
   generate: true
   assets:
     - assets/icons/custom/
-
-# Launcher icons and the native splash screen are configured manually:
-#  - Per-flavor adaptive icons live in android/app/src/{free,paid}/res/.
-#  - Legacy splash:   android/app/src/main/res/drawable/launch_background.xml.
-#  - Android 12+ splash: android/app/src/main/res/values-v31/styles.xml.
-#  - Regenerate icon assets from assets/icons/custom/smritive-icon.png with:
-#       pwsh tool/gen_icons.ps1
-#  - The animated splash on the Flutter side is in lib/core/splash/.
-
