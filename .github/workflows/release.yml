@@ -1,0 +1,213 @@
+name: Release
+
+# Tag-driven release. Push a tag like `v1.0.0` to trigger.
+# `workflow_dispatch` lets you re-run the workflow against an existing tag
+# from the Actions tab without creating a new tag.
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to build (e.g. v1.0.0). Required for manual runs.'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ── 1. Build both flavors in parallel ─────────────────────────────────────
+  build:
+    name: Build ${{ matrix.flavor }} APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [free, paid]
+
+    outputs:
+      tag: ${{ steps.target.outputs.tag }}
+      prerelease: ${{ steps.target.outputs.prerelease }}
+
+    steps:
+      - name: Resolve target tag
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          if [ -z "$TAG" ]; then
+            echo "::error::Target tag could not be resolved."
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          # Pre-release detection: hyphen after the version (v1.0.0-beta.1).
+          if [[ "$TAG" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository at tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.target.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Verify pubspec version matches tag
+        run: |
+          TAG="${{ steps.target.outputs.tag }}"
+          # Strip leading 'v' and any '-prerelease' suffix to compare against pubspec.
+          TAG_VERSION="${TAG#v}"
+          TAG_VERSION_BASE="${TAG_VERSION%%-*}"
+          PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1 | tr -d '\r\n')
+          if [ "$TAG_VERSION_BASE" != "$PUBSPEC_VERSION" ]; then
+            echo "::error::Tag $TAG (base $TAG_VERSION_BASE) does not match pubspec.yaml version ($PUBSPEC_VERSION). Bump pubspec or fix the tag."
+            exit 1
+          fi
+          echo "Tag $TAG aligns with pubspec version $PUBSPEC_VERSION."
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK & NDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-34 build-tools;34.0.0 ndk;29.0.13113456'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.41.4'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code (json_serializable)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build ${{ matrix.flavor }} APK
+        run: |
+          TAG="${{ steps.target.outputs.tag }}"
+          # Strip leading 'v' so AndroidManifest version name is "1.0.0", not "v1.0.0".
+          BUILD_NAME="${TAG#v}"
+          flutter build apk --release \
+            --flavor ${{ matrix.flavor }} \
+            --dart-define=FLAVOR=${{ matrix.flavor }} \
+            --build-name="$BUILD_NAME" \
+            --build-number="${{ github.run_number }}"
+
+      - name: Rename APK
+        id: rename
+        run: |
+          TAG="${{ steps.target.outputs.tag }}"
+          FLAVOR="${{ matrix.flavor }}"
+          SRC="build/app/outputs/flutter-apk/app-${FLAVOR}-release.apk"
+          DST="build/app/outputs/flutter-apk/smritive-${TAG}-${FLAVOR}.apk"
+          if [ ! -f "$SRC" ]; then
+            echo "::error::Release APK not found at $SRC"
+            exit 1
+          fi
+          mv "$SRC" "$DST"
+          echo "apk_path=$DST" >> "$GITHUB_OUTPUT"
+          echo "apk_name=$(basename "$DST")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smritive-${{ matrix.flavor }}
+          path: ${{ steps.rename.outputs.apk_path }}
+          if-no-files-found: error
+          retention-days: 7
+
+  # ── 2. Publish a single release with both APKs ────────────────────────────
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository at tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Download all APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect APKs
+        id: collect
+        run: |
+          mkdir -p release
+          find artifacts -name '*.apk' -exec mv {} release/ \;
+          echo "Files staged for release:"
+          ls -la release
+          {
+            echo "files<<FILES_EOF"
+            ls release/*.apk
+            echo "FILES_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          TAG="${{ needs.build.outputs.tag }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || echo "")
+          {
+            echo "changelog<<CHANGELOG_EOF"
+            echo "## Smritive ${TAG}"
+            echo ""
+            echo "Two APKs are attached to this release:"
+            echo ""
+            echo "- \`smritive-${TAG}-free.apk\` - free flavor (no location feature)."
+            echo "- \`smritive-${TAG}-paid.apk\` - paid flavor (full feature set)."
+            echo ""
+            echo "They install side-by-side: free uses application id \`com.example.smritive.free\`, paid uses \`com.example.smritive\`."
+            echo ""
+            if [ -z "$PREV_TAG" ]; then
+              echo "### Initial release"
+              echo ""
+              git log --pretty=format:"- %s (%h)" "${TAG}"
+            else
+              echo "### Changes since ${PREV_TAG}"
+              echo ""
+              git log --pretty=format:"- %s (%h)" "${PREV_TAG}..${TAG}"
+              echo ""
+              echo ""
+              echo "**Full changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG}"
+            fi
+            echo ""
+            echo ""
+            echo "> NOTE: Both APKs are signed with the debug keystore. Replace android/app/build.gradle.kts signing config with a release keystore before public distribution."
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.build.outputs.tag }}
+          name: Smritive ${{ needs.build.outputs.tag }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          files: release/*.apk
+          draft: false
+          prerelease: ${{ needs.build.outputs.prerelease == 'true' }}
+          fail_on_unmatched_files: true
